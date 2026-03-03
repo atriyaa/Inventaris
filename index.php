@@ -59,7 +59,7 @@ include "config/database.php";
                     <button class="btn btn-primary" type="submit">Ajukan Peminjaman</button>
                 </form>
             
-                <p><i>Status: menunggu persetujuan admin</i></p>
+                <p><i>Status: Sedang menunggu persetujuan admin</i></p>
             
             <?php exit; // STOP, jangan tampilkan tabel barang ?>
             <?php endif; ?>
