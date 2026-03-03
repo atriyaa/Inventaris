@@ -47,7 +47,7 @@ include "config/database.php";
                 <a href="index.php?filter=Pendingin" class="card p-4 text-decoration-none text-dark">Pendingin</a>
         </div>
             <?php if ($lab): ?>
-                <h3>Pengajuan Peminjaman <?= $lab ?></h3>
+                <h3>Silahkan Pengajuan Peminjaman <?= $lab ?></h3>
             
                 <form action="ajukan_lab.php" method="POST">
                     <input type="hidden" name="lab" value="<?= $lab ?>">
