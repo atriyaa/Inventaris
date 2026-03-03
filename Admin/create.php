@@ -121,6 +121,14 @@
                 <input type="number" name="tahun_perolehan" min="2015" max="2030" placeholder="Contoh: 2024">
             </div>
 
+            <div class="form-group">
+                <label for="tersedia">Tersedia</label>
+                <select name="tersedia">
+                    <option value="1">Iya</option>
+                    <option value="0">Tidak</option>
+                </select>
+            </div>
+
             <div class="form-group full-width">
                 <label for="spesifikasi">Spesifikasi</label>
                 <textarea name="spesifikasi" placeholder="Masukkan spesifikasi detail barang..."></textarea>
@@ -130,16 +138,10 @@
                 <label for="keterangan">Keterangan</label>
                 <textarea name="keterangan" placeholder="Masukkan keterangan tambahan jika diperlukan..."></textarea>
             </div>
-
-            <div class="form-group">
-                <label for="tersedia">Tersedia</label>
-                <select name="tersedia">
-                    <option value="1">Iya</option>
-                    <option value="0">Tidak</option>
-                </select>
+            
+            <div class="tombol-submit">
+            <button type="submit" name="tambah_data" class="btn-tambah-inventaris">Tambah Data Inventaris</button>
             </div>
-    
-            <button type="submit" name="tambah_data" class="btn-submit">Tambah Data Inventaris</button>
 
             <div class="form-back">
                 <a href="dashboard.php">← Kembali ke Dashboard</a>
