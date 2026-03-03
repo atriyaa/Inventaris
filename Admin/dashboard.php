@@ -5,26 +5,34 @@
         header("Location: ../login.php");
         exit;
     }
- $lab = $_GET['lab'] ?? null;
- $filter = $_GET['filter'] ?? 'all';
+    $lab = $_GET['lab'] ?? null;
+    $filter = $_GET['filter'] ?? 'all';
 
- $where = [];
+    $where = [];
 
- if ($filter != 'all') {
-    $where[] = "kategori = '$filter'";
- }
- if ($lab == 'lab_mm') {
-    $where[] = "lokasi = 'LAB MM'";
- } elseif ($lab == 'lab_jarkom') {
-    $where[] = "lokasi = 'LAB Jarkom'";
- }
+    if ($filter != 'all') {
+        $where[] = "kategori.nama_kategori = '$filter'";
+    }
 
- $where_sql = '';
- if (!empty($where)) {
-    $where_sql = 'WHERE ' . implode(' AND ', $where);
- }
-    $query = "SELECT * FROM barang $where_sql ORDER BY id DESC";
-    $result = mysqli_query($conn, $query);
+    if ($lab == 'lab_mm') {
+        $where[] = "barang.lokasi = 'LAB MM'";
+    } elseif ($lab == 'lab_jarkom') {
+        $where[] = "barang.lokasi = 'LAB Jarkom'";
+    }
+
+    $where_sql = '';
+    if (!empty($where)) {
+        $where_sql = 'WHERE ' . implode(' AND ', $where);
+    }
+
+    $query = "
+        SELECT barang.*, kategori.nama_kategori
+        FROM barang
+        JOIN kategori ON barang.kategori_id = kategori.id
+        $where_sql 
+        ORDER BY barang.id DESC
+    ";
+    $result = mysqli_query($conn, $query)
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,11 +48,11 @@
         <h2 class="text-center mb-4">Inventaris Laboratorium Informatika</h2>
         <div class="d-flex align-items-start gap-4">
             <div style="width: 250;">
-                <a href="dashboard.php?filter=Alat Komputer" class="card p-4 text-decoration-none text-dark">Alat Komputer</a>
-                <a href="dashboard.php?filter=Furniture" class="card p-4 text-decoration-none text-dark">Furniture</a>
-                <a href="dashboard.php?filter=Perangkat Audio" class="card p-4 text-decoration-none text-dark">Perangkat Audio</a>
-                <a href="dashboard.php?filter=Elektronik" class="card p-4 text-decoration-none text-dark">Elektronik</a>
-                <a href="dashboard.php?filter=Pendingin" class="card p-4 text-decoration-none text-dark">Pendingin</a>
+                <a href="dashboard.php?filter=1" class="card p-4 text-decoration-none text-dark">Alat Komputer</a>
+                <a href="dashboard.php?filter=2" class="card p-4 text-decoration-none text-dark">Furniture</a>
+                <a href="dashboard.php?filter=3" class="card p-4 text-decoration-none text-dark">Perangkat Audio</a>
+                <a href="dashboard.php?filter=4" class="card p-4 text-decoration-none text-dark">Elektronik</a>
+                <a href="dashboard.php?filter=5" class="card p-4 text-decoration-none text-dark">Pendingin</a>
             </div>
             <div style="flex:1"> 
                 <table class="table table-bordered table-striped">
