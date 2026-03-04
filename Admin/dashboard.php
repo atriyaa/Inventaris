@@ -101,11 +101,15 @@
             </div>
         </div>
     </div>
+<section class="action-buttons">
+    <a href="dashboard.php" class="btn-dashboard">Back to Dashboard</a>
+    <a href="../index.php" class="btn-index">Back to Index</a>
+    <a href="create.php" class="btn-submit">Tambah Data</a>
+</section>
 
-        <a href="create.php" class="btn-submit">Tambah Data</a><br><br>
-        <a href="dashboard.php" class="btn-dashboard">Back to Dashboard</a><br><br>
-        <a href="../index.php">Back to Index</a>
-    </section>
+
+
+    
 </body>
 </html>
 
