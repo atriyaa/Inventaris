@@ -1,30 +1,25 @@
 <?php
 require_once "config/database.php";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $barang_id = $_POST['barang_id'];
-    $jumlah = $_POST['jumlah'];
+if (isset($_POST["pinjam"])) {
     $nama_peminjam = $_POST['nama_peminjam'];
     $keperluan = $_POST['keperluan'];
+    $jumlah = $_POST['jumlah'];
+    $barang_id = $_POST['barang_id'];
 
-    mysqli_query($conn, "INSERT INTO peminjaman (barang_id, jumlah, nama_peminjam, keperluan) VALUES ('$barang_id', '$jumlah', '$nama_peminjam', '$keperluan')");
-    header("Location: Admin/dashboard.php?pinjam=success");
-    echo "Peminjaman Berhasil";
-    exit;
+    $sql =  "INSERT INTO peminjaman (nama_peminjam, keperluan, jumlah, barang_id) VALUES ('$nama_peminjam', '$keperluan', '$jumlah', '$barang_id')";
+    if (mysqli_query($conn, $sql)) {
+        $create_message = "Data berhasil ditambahkan";
+        $message_type = "success";
+    } else {
+        $create_message = "Data gagal ditambahkan";
+        $message_type = "error";
+    }
 }
-$barang = mysqli_query($conn,
-    "SELECT barang.*, kategori.nama_kategori
-     FROM barang
-     JOIN kategori ON barang.kategori_id = kategori.id
-     WHERE barang.id = $id"
-);
-$jml_barang_pinjam = mysqli_query($conn, 
-    "SELECT * FROM peminjaman WHERE peminjaman.id = $id"
-);
-
-$data = mysqli_fetch_assoc($barang);
-$data_pinjam = mysqli_fetch_assoc($jml_barang_pinjam);
-
+$query = mysqli_query($conn, "SELECT barang.*, IFNULL(SUM(peminjaman.jumlah),0) AS sedang_dipinjam FROM barang
+LEFT JOIN peminjaman ON barang.id = peminjaman.barang_id AND peminjaman.status='dipinjam' GROUP BY barang.id
+");
+$brg = mysqli_query($conn, "SELECT * FROM barang");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,25 +30,52 @@ $data_pinjam = mysqli_fetch_assoc($jml_barang_pinjam);
 </head>
 <body>
     <h3>Form Peminjaman</h3>
+    <table class="table-peminjaman">
+        <tr>
+            <th>Nama Barang</th>
+            <th>Jumlah</th>
+            <th>Sedang Dipinjam</th>
+            <th>Stok</th>
+        </tr>
+        <?php while($row = mysqli_fetch_assoc($query)) { ?>
+            <?php
+            $stok_tersedia = $row['jumlah'] - $row['sedang_dipinjam'];
+            ?>
+            <tr>
+                <td><?php echo $row['nama_barang']; ?></td>
+                <td><?php echo $row['jumlah']; ?></td>
+                <td><?php echo $row['sedang_dipinjam']; ?></td>
+                <td><?php echo $stok_tersedia; ?></td>
+            </tr>
+        <?php } ?>
 
-    <p><b><?= $data['nama_barang']; ?></b></p>
-    <p>Kategori: <?= $data['nama_kategori']; ?></p>
-    <p>Jumlah Stok: <?= $data['jumlah']; ?></p>
-    <p>Stok Dipinjam: <?= $data_pinjam['jumlah']; ?></p>
-
+    </table>
     <form method="POST">
-        <input type="hidden" name="barang_id" value="<?= $data['id']; ?>">
+        <label for="pilih barang">Pilih Barang</label><br>
+        <select name="barang_id" required>
+            <option value="">-- Pilih Barang --</option>
+            <?php while($row = mysqli_fetch_assoc($brg)) { ?>
+                <option value="<?php echo $row['id']; ?>">
+                    <?php echo $row['nama_barang']; ?>
+                </option>
+            <?php } ?>
+        </select>
 
-        <label>Nama Peminjam</label>
+        <label for="jumlah">Jumlah</label><br>
+        <input type="number" name="jumlah" required>
+        <br><br>
+
+        <label for="nama_peminjam">Nama Peminjam</label><br>
         <input type="text" name="nama_peminjam" required>
+        <br><br>
 
-        <label>Jumlah Pinjam</label>
-        <input type="number" name="jumlah" min="1" max="<?= $data['jumlah']; ?>" required>
+        <label for="keperluan">Keperluan</label><br>
+        <input type="text" name="keperluan" required>
+        <br><br>
 
-        <label>Keperluan</label>
-        <textarea name="keperluan"></textarea>
-
-        <button type="submit">Simpan Peminjaman</button>
+        <button type="submit" name="pinjam">Pinjam</button><br><br>
+        <a href="Admin/dashboard.php" class="adalah">Back to Dashboard</a>
     </form>
+
 </body>
-</html>
+</html>  

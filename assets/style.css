@@ -22,24 +22,41 @@
     color: #333;
 }
 
-.card-barang {
-    background: #ffffff;
-    padding: 16px;
-    margin-bottom: 16px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-}
-
-.card-header {
+.category-container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+    justify-content: center;
 }
 
-.card-header h3 {
-    margin: 0;
+.category-card {
+    width:200px;
+    padding:20px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#94badb,#7da4a6);
+    color:white;
+    text-align:center;
+    font-weight:600;
+    font-size:18px;
+    text-decoration:none;
+    box-shadow:0 6px 15px rgba(0,0,0,0.15);
+    transition:0.3s;
 }
 
+.category-card {
+    font-size: 30px;
+}
+
+.category-card span {
+    margin-top: 8px;
+    font-size: 16px;
+}
+
+.category-card:hover {
+    transform:translate(-6px);
+    box-shadow:0 12px 25px rgba(0,0,0,0.25);
+}
 .btn-pinjam {
     background-color: #2563eb;
     color: #ffffff;
@@ -125,24 +142,6 @@
     background: #1e40af;
 }
 
-.category-wrapper {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
-}
-
-/* Card kategori */
-.category-card {
-    padding: 12px 22px;
-    background: linear-gradient(135deg, #4facfe, #00f2fe);
-    color: white;
-    font-weight: 600;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-}
 
 /* Form Container Styles */
 .form-container {

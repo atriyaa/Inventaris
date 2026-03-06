@@ -49,19 +49,23 @@
 </head>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <body>
+    <div><a href="export_excel.php" class="">
+        <button>Download Excel</button>
+    </a>
+    </div>
     <div>
         <a href="../pinjam.php">Pinjam</a>
     </div>
+    <h2 class="text-center mb-4">Inventaris Laboratorium Informatika</h2>
+        <div class="category-container">
+            <a href="dashboard.php?filter=1" class="category-card"><span>Alat Komputer</span></a>
+            <a href="dashboard.php?filter=2" class="category-card""><span>Furniture</span></a>
+            <a href="dashboard.php?filter=3" class="category-card""><span>Perangkat Audio</span></a>
+            <a href="dashboard.php?filter=4" class="category-card""><span>Elektronik</span></a>
+            <a href="dashboard.php?filter=5" class="category-card""><span>Pendingin</span></a>
+        </div>
     <div class="container mt-4">
-        <h2 class="text-center mb-4">Inventaris Laboratorium Informatika</h2>
         <div class="d-flex align-items-start gap-4">
-            <div style="width: 250;">
-                <a href="dashboard.php?filter=1" class="card p-4 text-decoration-none text-dark">Alat Komputer</a>
-                <a href="dashboard.php?filter=2" class="card p-4 text-decoration-none text-dark">Furniture</a>
-                <a href="dashboard.php?filter=3" class="card p-4 text-decoration-none text-dark">Perangkat Audio</a>
-                <a href="dashboard.php?filter=4" class="card p-4 text-decoration-none text-dark">Elektronik</a>
-                <a href="dashboard.php?filter=5" class="card p-4 text-decoration-none text-dark">Pendingin</a>
-            </div>
             <div style="flex:1"> 
                 <table class="table table-bordered table-striped">
                     <tr> 
@@ -114,9 +118,5 @@
     <a href="../index.php" class="btn-index">Back to Index</a>
     <a href="create.php" class="btn-submit">Tambah Data</a>
 </section>
-
-
-
-    
 </body>
 </html>
