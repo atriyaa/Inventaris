@@ -22,6 +22,36 @@
     color: #333;
 }
 
+.card-barang {
+    background: #ffffff;
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h3 {
+    margin: 0;
+}
+
+.btn-pinjam {
+    background-color: #2563eb;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.btn-pinjam:hover {
+    background-color: #1d4ed8;
+}
 .input-group {
     margin-bottom: 20px;
 }

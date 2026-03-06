@@ -1,30 +1,36 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
+    echo "DB OK";
+    session_start();
+    $sql_kategori = mysqli_query($conn, "SELECT * FROM kategori");
+    if (!$sql_kategori) {
+        die("Query kategori error: " . mysqli_error($conn));
+    }
     $create_message = "";
     $message_type = "";
-    session_start();
-        if (isset($_POST["tambah_data"])){
-        $kode_inventaris = $_POST["kode_inventaris"];
-        $nama_barang = $_POST["nama_barang"];
-        $kategori = $_POST["kategori"];
-        $merk = $_POST["merk"];
-        $tipe = $_POST["tipe"];
-        $spesifikasi = $_POST["spesifikasi"];
-        $jumlah = $_POST["jumlah"];
-        $kondisi = $_POST["kondisi"];
-        $lokasi = $_POST["lokasi"];
-        $tahun_perolehan = $_POST["tahun_perolehan"];
-        $keterangan = $_POST["keterangan"];
-        $tersedia = $_POST["tersedia"];
 
-        $sql = "INSERT INTO barang (kode_inventaris, nama_barang, kategori, merk, tipe, spesifikasi, jumlah, kondisi, lokasi, tahun_perolehan, keterangan) VALUES ('$kode_inventaris', '$nama_barang', '$kategori','$merk', '$tipe', '$spesifikasi', '$jumlah', '$kondisi', '$lokasi', '$tahun_perolehan', '$keterangan')";
-        if ($conn->query($sql)) {
-            $create_message = "Data berhasil ditambahkan";
-            $message_type = "success";
-        } else {
-            $create_message = "Data gagal ditambahkan";
-            $message_type = "error";
-        }
+    if (isset($_POST["tambah_data"])) {
+    $kode_inventaris = $_POST["kode_inventaris"];
+    $kategori_id = $_POST["kategori_id"];
+    $nama_barang = $_POST["nama_barang"];
+    $merk = $_POST["merk"];
+    $tipe = $_POST["tipe"];
+    $spesifikasi = $_POST["spesifikasi"];
+    $jumlah = $_POST["jumlah"];
+    $kondisi = $_POST["kondisi"];
+    $lokasi = $_POST["lokasi"];
+    $tahun_perolehan = $_POST["tahun_perolehan"];
+    $keterangan = $_POST["keterangan"];
+    $tersedia = $_POST["tersedia"];
+
+    $sql = "INSERT INTO barang (kode_inventaris, kategori_id, nama_barang, merk, tipe, spesifikasi, jumlah, kondisi, lokasi, tahun_perolehan, keterangan) VALUES ('$kode_inventaris', '$kategori_id', '$nama_barang', '$merk', '$tipe', '$spesifikasi', '$jumlah', '$kondisi', '$lokasi', '$tahun_perolehan', '$keterangan')";
+    if (mysqli_query($conn, $sql)) {
+        $create_message = "Data berhasil ditambahkan";
+        $message_type = "success";
+    } else {
+        $create_message = "Data gagal ditambahkan";
+        $message_type = "error";
+    }
     }
 ?>
 <!DOCTYPE html>
@@ -77,13 +83,13 @@
 
             <div class="form-group">
                 <label for="kategori">Kategori</label>
-                <select name="kategori" required>
+                <select name="kategori_id" required>
                     <option value="">Pilih Kategori</option>
-                    <option value="Elektronik">Elektronik</option>
-                    <option value="Furniture">Furniture</option>
-                    <option value="Alat Tulis">Alat Tulis</option>
-                    <option value="Lab">Lab</option>
-                    <option value="Lainnya">Lainnya</option>
+                    <?php while ($k = mysqli_fetch_assoc($sql_kategori)) : ?>
+                        <option value="<?= $k['id']; ?>">
+                            <?= $k['nama_kategori']; ?>
+                        </option>
+                    <?php endwhile; ?>
                 </select>
             </div>
     

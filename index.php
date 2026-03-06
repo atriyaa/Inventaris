@@ -95,10 +95,9 @@ include "config/database.php";
                             <button type="submit">Pinjam</button>
                         </form>
                         <?php } else { ?>
-                        Habis
+                            Habis
                         <?php } ?>
-                        <?php } ?>
-                        
+                <?php } ?>
                     </td>
                 </tr>
             </table>
