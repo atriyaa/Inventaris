@@ -1,6 +1,5 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
-    echo "DB OK";
     session_start();
     $sql_kategori = mysqli_query($conn, "SELECT * FROM kategori");
     if (!$sql_kategori) {
@@ -40,20 +39,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>silahkan Tambah Data Inventaris</title>
     <link rel="stylesheet" href="../assets/style.css">
-    <style>
-        body {
-            background: #f1f5f9;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .welcome-header {
-            text-align: center;
-            color: #1e293b;
-            margin-bottom: 30px;
-        }
-    </style>
 </head>
-<body>
+<body class="bodoamat">
     <div class="welcome-header">
         <h4>Selamat Datang, <?php echo $_SESSION["username"]; ?></h4>
     </div>

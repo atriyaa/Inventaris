@@ -1,5 +1,6 @@
 <?php
 require_once "config/database.php";
+session_start();
 
 if (isset($_POST["pinjam"])) {
     $nama_peminjam = $_POST['nama_peminjam'];
@@ -27,10 +28,30 @@ $brg = mysqli_query($conn, "SELECT * FROM barang");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pinjam</title>
+    <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
-    <h3>Form Peminjaman</h3>
-    <table class="table-peminjaman">
+    <div class="sidebar" id="sidebar">
+        <h2>INVENTARIS<br>LABORATORIUM<br>INFORMATIKA</h2>
+        <ul>
+            <li><a href="Admin/dashboard.php">Dashboard</a></li>
+            <li><a href="../pinjam.php">Pinjam</a></li>
+            <li><a href="Admin/peminjaman.php">Peminjaman Aktif</a></li>
+            <li><a href="../history_peminjaman.php">History Peminjaman</a></li>
+        </ul>
+        <div class="logout">
+            <a href="../logout.php">Logout</a>
+        </div>
+    </div>
+    <div class="main" id="main">
+        <div class="header">
+            <div class="button_dash">
+                <button id="toggleSidebar">☰</button>
+                <h1>Pinjam Barang</h1>
+            </div>
+            <div class="user">Selamat Datang, <br><?php echo $_SESSION["username"];?></div>
+        </div>
+    <table class="table-peminjaman" border="1">
         <tr>
             <th>Nama Barang</th>
             <th>Jumlah</th>
@@ -76,6 +97,15 @@ $brg = mysqli_query($conn, "SELECT * FROM barang");
         <button type="submit" name="pinjam">Pinjam</button><br><br>
         <a href="Admin/dashboard.php" class="adalah">Back to Dashboard</a>
     </form>
+<script>
+    const toggle = document.getElementById("toggleSidebar");
+    const sidebar = document.querySelector(".sidebar");
+    const main = document.querySelector(".main")
 
+    toggle.onclick = function() {
+    sidebar.classList.toggle("close");
+    main.classList.toggle("full");
+    }
+</script>
 </body>
 </html>  

@@ -44,9 +44,9 @@
 <body>
     <div class="login-container">
         <form autocomplete="off"  action="proses_login.php" method="POST" class="login-form">
-            <h1>Selamat Datang di Inventaris Lab</h1>
-            <h3>Laboratorium Informatika</h3>
-        <p><?php echo $login_message; ?></p>
+            <h1>Selamat Datang<br>di Inventaris<br></h1>
+            <h2>Laboratorium Informatika</h2>
+            <p><?php echo $login_message; ?></p>
             <div class="input-group">
                 <label for="username" name="username">Username</label>
                 <input type="text" name="username" required>
