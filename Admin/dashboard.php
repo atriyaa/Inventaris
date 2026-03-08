@@ -48,7 +48,7 @@
 </head>
 <body class="body">
     <div class="sidebar" id="sidebar">
-        <h2>INVENTARIS<br>LABORATORIUM<br>INFORMATIKA</h2>
+        <h2>INVENTARIS<br>kangen ivan LABORATORIUM<br>INFORMATIKA</h2>
         <ul>
             <li><a href="#">Dashboard</a></li>
             <li><a href="../pinjam.php">Pinjam</a></li>

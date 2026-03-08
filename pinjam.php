@@ -80,7 +80,7 @@ $brg = mysqli_query($conn, "SELECT * FROM barang");
                     <?php echo $row['nama_barang']; ?>
                 </option>
             <?php } ?>
-        </select>
+        </select><br>
 
         <label for="jumlah">Jumlah</label><br>
         <input type="number" name="jumlah" required>
