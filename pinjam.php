@@ -20,7 +20,6 @@ if (isset($_POST["pinjam"])) {
 $query = mysqli_query($conn, "SELECT barang.*, IFNULL(SUM(peminjaman.jumlah),0) AS sedang_dipinjam FROM barang
 LEFT JOIN peminjaman ON barang.id = peminjaman.barang_id AND peminjaman.status='dipinjam' GROUP BY barang.id
 ");
-$brg = mysqli_query($conn, "SELECT * FROM barang");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,17 +29,25 @@ $brg = mysqli_query($conn, "SELECT * FROM barang");
     <title>Pinjam</title>
     <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body>
+<body class="body">
+    <?php $page = basename($_SERVER['PHP_SELF']); ?>
     <div class="sidebar" id="sidebar">
-        <h2>INVENTARIS<br>LABORATORIUM<br>INFORMATIKA</h2>
-        <ul>
-            <li><a href="Admin/dashboard.php">Dashboard</a></li>
-            <li><a href="../pinjam.php">Pinjam</a></li>
-            <li><a href="Admin/peminjaman.php">Peminjaman Aktif</a></li>
-            <li><a href="../history_peminjaman.php">History Peminjaman</a></li>
-        </ul>
+        <h2 class="logo">INVENTARIS LABORATORIUM<br>INFORMATIKA</h2>
+        <div class="menu-group">
+            <p class="menu-title">MAIN</p>
+            <ul>
+                <li><a href="Admin/dashboard.php" class="menu-item <?=  $page=='dashboard.php'?'active':''?>">Dashboard</a></li>
+                <li><a href="../pinjam.php" class="menu-item  <?=  $page=='pinjam.php'?'active':''?>">Pinjam</a></li>
+                <li><a href="peminjaman.php" class="menu-item  <?=  $page=='peminjaman.php'?'active':''?>">Peminjaman Aktif</a></li>
+                <li><a href="../history_peminjaman.php" class="menu-item  <?=  $page=='history_peminjaman.php'?'active':''?>">History Peminjaman</a></li>
+            </ul>
+        </div>
+        <div class="menu-group">
+            <p class="menu-title">TEAMS</p>
+            <!-- nanti ambil di database admin -->
+        </div>
         <div class="logout">
-            <a href="../logout.php">Logout</a>
+            <a href="../logout.php" class="menu-item logout">Logout</a>
         </div>
     </div>
     <div class="main" id="main">
@@ -49,54 +56,63 @@ $brg = mysqli_query($conn, "SELECT * FROM barang");
                 <button id="toggleSidebar">☰</button>
                 <h1>Pinjam Barang</h1>
             </div>
-            <div class="user">Selamat Datang, <br><?php echo $_SESSION["username"];?></div>
         </div>
-    <table class="table-peminjaman" border="1">
-        <tr>
-            <th>Nama Barang</th>
-            <th>Jumlah</th>
-            <th>Sedang Dipinjam</th>
-            <th>Stok</th>
-        </tr>
-        <?php while($row = mysqli_fetch_assoc($query)) { ?>
-            <?php
-            $stok_tersedia = $row['jumlah'] - $row['sedang_dipinjam'];
-            ?>
-            <tr>
-                <td><?php echo $row['nama_barang']; ?></td>
-                <td><?php echo $row['jumlah']; ?></td>
-                <td><?php echo $row['sedang_dipinjam']; ?></td>
-                <td><?php echo $stok_tersedia; ?></td>
-            </tr>
-        <?php } ?>
-
-    </table>
-    <form method="POST">
-        <label for="pilih barang">Pilih Barang</label><br>
-        <select name="barang_id" required>
-            <option value="">-- Pilih Barang --</option>
-            <?php while($row = mysqli_fetch_assoc($brg)) { ?>
-                <option value="<?php echo $row['id']; ?>">
-                    <?php echo $row['nama_barang']; ?>
-                </option>
-            <?php } ?>
-        </select><br>
-
-        <label for="jumlah">Jumlah</label><br>
-        <input type="number" name="jumlah" required>
-        <br><br>
-
-        <label for="nama_peminjam">Nama Peminjam</label><br>
-        <input type="text" name="nama_peminjam" required>
-        <br><br>
-
-        <label for="keperluan">Keperluan</label><br>
-        <input type="text" name="keperluan" required>
-        <br><br>
-
-        <button type="submit" name="pinjam">Pinjam</button><br><br>
-        <a href="Admin/dashboard.php" class="adalah">Back to Dashboard</a>
-    </form>
+    <div class="form-container">
+        <div class="form-header">
+            <div class="welcome-header">
+                <h4>Selamat Datang ,<?php echo $_SESSION["username"];?></h4>
+                <h3>Form Pinjam Inventaris</h3>
+                <p class="sub">Silahkan lengkapi data pinjam</p>
+            </div>
+        </div>
+        <div class="info-barang hidden-info" id="infoBarangBox">
+            <h5>Info Barang</h5>
+            <div class="info-card">
+                <p><b>Nama Barang :</b><span id="namaBarang">-</span></p>
+                <p><b>Stok :</b><span id="stokBarang">-</span></p>
+                <p><b>Sedang Dipinjam :</b><span id="dipinjamBarang">-</span></p>
+            </div>
+        </div>
+        <div class="form-card">
+            <form autocomplete="off"  method="POST" class="form-tambah">
+                <div class="form-group">
+                    <label for="pilih barang">Pilih Barang</label>
+                    <select  id="barangSelect" name="barang_id" required>
+                        <option value="">-- Pilih Barang --</option>
+                        <?php while($row = mysqli_fetch_assoc($query)) { 
+                            $stok_tersedia = $row['jumlah'] - $row['sedang_dipinjam']; 
+                        ?>
+                        <option value="<?php echo $row['id']; ?>"
+                        data-nama="<?php echo $row['nama_barang']; ?>"
+                        data-stok="<?php echo $stok_tersedia; ?>"
+                        data-dipinjam="<?php echo $row['sedang_dipinjam']; ?>">
+                        <?php echo $row['nama_barang']; ?>
+                        </option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="jumlah">Jumlah</label>
+                    <input type="number" name="jumlah" required>
+                </div>
+                <div class="form-group">
+                    <label for="nama_peminjam">Nama Peminjam</label>
+                    <input type="text" name="nama_peminjam" required>
+                </div>
+                <div class="form-group">
+                    <label for="keperluan">Keperluan</label>
+                    <input type="text" name="keperluan" required>
+                </div>
+                
+                <div class="tombol-submit">
+                    <button type="submit" name="pinjam" class="btn-tambah-inventaris">Pinjam</button>
+                </div>
+                <div class="form-back">
+                    <a href="Admin/dashboard.php">Back to Dashboard</a>
+                </div>
+            </form>
+        </div>
+    </div>
 <script>
     const toggle = document.getElementById("toggleSidebar");
     const sidebar = document.querySelector(".sidebar");
@@ -106,6 +122,33 @@ $brg = mysqli_query($conn, "SELECT * FROM barang");
     sidebar.classList.toggle("close");
     main.classList.toggle("full");
     }
+    document.addEventListener("DOMContentLoaded", function() { 
+        const barangSelect = document.getElementById("barangSelect");
+        const infoBox = document.getElementById("infoBarangBox");
+
+        const namaBarang = document.getElementById("namaBarang");
+        const stokBarang = document.getElementById("stokBarang");
+        const dipinjamBarang = document.getElementById("dipinjamBarang");
+
+        barangSelect.addEventListener("change", function() {
+            console.log(barangSelect);
+            const selected = this.options[this.selectedIndex];
+
+            const nama = selected.getAttribute("data-nama");
+            const stok = selected.getAttribute("data-stok");
+            const dipinjam = selected.getAttribute("data-dipinjam");
+
+            if(nama) {
+                infoBox.classList.remove("hidden-info");
+
+                namaBarang.textContent = nama;
+                stokBarang.textContent = stok;
+                dipinjamBarang.textContent = dipinjam;
+            } else {
+                infoBox.classList.add("hidden-info");
+            }
+        });
+    });
 </script>
 </body>
 </html>  

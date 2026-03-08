@@ -10,8 +10,11 @@
 
 }
 
+.container {
+    display: contents;
+}
 .sidebar {
-    width: 260px;
+    width: 250px;
     height: 100vh;
     background: linear-gradient(180deg, #0f172a, #1e3a5f);
     color: white;
@@ -24,17 +27,16 @@
 
 .sidebar.close {
     width: 0;
-    padding: o;
+    padding: 0;
     overflow: hidden;
     left: -230px
 }
 
-.sidebar h2 {
-    font-size: 14px;
-    margin-bottom: 30px;
+.logo{
+    font-size: 18px;
+    font-weight: bold;
     line-height: 1.4;
-    text-align: center;
-    color: #166534;
+    margin-bottom: 35px;
 }
 
 .sidebar ul {
@@ -58,9 +60,42 @@
     background: #3f5c7a;
 }
 
+.menu-group {
+    margin-bottom: 15px;
+}
+
+.menu-title {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 5px;
+}
+
+.menu-item {
+    display: block;
+    padding: 4px 10px;
+    font-size: 14px;
+    color: white;
+    text-decoration: none;
+    margin-bottom: 2px;
+    line-height: 0.25;
+}
+
+.menu-item:hover {
+    background: #1e293b;
+    border-radius: 6px;
+    padding-left: 12px;
+    transition: 0.2s;
+}
+
+.menu-item.active {
+    background: #0f172a;
+    border-left: 4px solid #b8c1ec;
+    font-weight: bold;
+}
+
 .logout { 
     position: absolute;
-    bottom: 20px;
+    margin-top: 50px;
 }
 
 .logout a{
@@ -69,14 +104,19 @@
 }
 
 .main {
-    margin-left: 230px;
+    margin-left: 250px;
+    padding: 30px;
     width: 100%;
-    padding: 25px;
     transition: 0.3s;
 }
 
 .main.full {
     margin-left: 0;
+
+}
+
+.main.full .form-container{ 
+    margin: auto;
 }
 
 .header {
@@ -106,7 +146,7 @@
 }
 
 .user {
-    font-size: 20px;
+    font-size: 16px;
     color: #333;
     justify-items: end;
 }
@@ -116,18 +156,18 @@
 }
 .actions {
     margin-bottom: 20px;
-    justify-content: end;
+    justify-content: right;
+    text-align: right;
 }
 
 .btn-primary {
-    background: #1e3a5f;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 6px;
-    text-decoration: none;
-    cursor: pointer;
-    font-size: 14px;
     display: inline-block;
+    padding: 8px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    background: #1e3a5f;
+    color: white;
+    margin-left: 10px;
 }
 
 .btn-primary a {
@@ -139,51 +179,94 @@
     background: #5589c0;
 }
 
-.kategori {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
+.kategori-select {
+    margin: 20px 0;
 }
 
-.kategori-card {
-    background: white;
-    text-decoration: none;
-    border: 2px solid #1e3a5f;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
+.kategori-slct {
+    width: 260px;
+    height: 45px;
+    border-radius: 10px;
+    border: 2px solid #d1d5db;
+    padding: 0 10px;
     font-size: 14px;
-    color: #1e3a5f;
-    transition: 0.3s;
+    background: white;
+    cursor: pointer;
 }
 
-.kategori-card:hover {
-    background: #1e3a5f;
-    color: white;
+.kategori-slct:focus {
+    outline: none;
+    border-color: #1e3a5f;
 }
 
+.hidden-info {
+    display: none;
+}
+
+.info-barang {
+    margin-bottom: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.info-card {
+    background: #fffffe;
+    border: 2px solid #b8c1ec;
+    border-radius: 10px;
+    padding: 15px 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.info-card p{
+    margin: 0;
+    font-size: 14px;
+    color: #232946;
+}
+
+.info-card span{
+    margin-left: 5px;
+    font-weight: bold;
+    color: #121629;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 .table-container {
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     transition: 0.3s;
-    text-align: center;
-    position: absolute;
 
+}
+
+.main.full .table-container{
+    margin: 30px auto;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
     border-color: #000;
+    text-align: center;
 }
 
 th, td {
     border: 1px solid #d0d7e2;
     padding: 5px;
     text-align: center;
-    gap:1px;
+    gap:2px;
+    margin: auto;
 }
 .table-peminjaman{
     justify-content: center;
@@ -472,6 +555,8 @@ th {
     grid-column: 1 / -1;
     text-align: center;
     margin-top: 15px;
+    padding-bottom: 5px;
+    display: flex;
 }
 
 .form-back a {
@@ -543,7 +628,7 @@ th {
     align-self: center;
 }
 
-.bodoamat body {
+.body-{
             background: #f1f5f9;
             min-height: 100vh;
             padding: 20px;

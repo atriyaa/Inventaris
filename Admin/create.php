@@ -40,7 +40,7 @@
     <title>silahkan Tambah Data Inventaris</title>
     <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body class="bodoamat">
+<body class="body-">
     <div class="welcome-header">
         <h4>Selamat Datang, <?php echo $_SESSION["username"]; ?></h4>
     </div>
