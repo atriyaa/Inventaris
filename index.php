@@ -18,92 +18,82 @@ include "config/database.php";
  if (!empty($where)) {
     $where_sql = 'WHERE ' . implode(' AND ', $where);
  }
-    $query = "SELECT * FROM barang $where_sql ORDER BY id DESC";
-    $result = mysqli_query($conn, $query);
+
+$query = "
+    SELECT barang.*, kategori.nama_kategori
+    FROM barang
+    JOIN kategori ON barang.kategori_id = kategori.id
+    $where_sql 
+    ORDER BY barang.id DESC
+";
+$result = mysqli_query($conn, $query)
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <meta charset="UTF-8">
-    <title>Inventaris Laboratorium Informatika</title>
-</head>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<body>
-
-<div class="d-flex justify-content-end mb-3">
-    <a href="login.php" class="btn btn-primary admin-login">
-        🔐 Admin Login
-    </a>
-</div>
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Inventaris Laboratorium Informatika</h2>
-    <div class="d-flex align-items-start gap-4">
-        <div style="width: 250px">
-                <a href="index.php?filter=Alat Komputer" class="card p-4 text-decoration-none text-dark">Alat Komputer</a>
-                <a href="index.php?filter=Furniture" class="card p-4 text-decoration-none text-dark">Furniture</a>
-                <a href="index.php?filter=Perangkat Audio" class="card p-4 text-decoration-none text-dark">Perangkat Audio</a>
-                <a href="index.php?filter=Elektronik" class="card p-4 text-decoration-none text-dark">Elektronik</a>
-                <a href="index.php?filter=Pendingin" class="card p-4 text-decoration-none text-dark">Pendingin</a>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../assets/style.css"
+        <meta charset="UTF-8">
+        <title>Inventaris Laboratorium Informatika</title>
+    </head>
+<body class="body">
+    <div>
+        <a href="login.php" class="btn btn-primary admin-login">
+            🔐 Admin Login
+        </a>
+    </div>
+    <div class="container">
+        <div class="main" id="main">
+        <div class="header">
+            <div class="button_dash">
+                <button id="toggleSidebar">☰</button>
+                <h1>Dashboard</h1>
+            </div>
         </div>
-            <?php if ($lab): ?>
-                <h3>Silahkan Pengajuan Peminjaman <?= $lab ?></h3>
-            
-                <form action="ajukan_lab.php" method="POST">
-                    <input type="hidden" name="lab" value="<?= $lab ?>">
-                    
-                    <input type="text" name="nama" placeholder="Nama Peminjam" required>
-                    <input type="text" name="keperluan" placeholder="Keperluan" required>
-                    <input type="date" name="tanggal" required>
-                    
-                    <button class="btn btn-primary" type="submit">Ajukan Peminjaman</button>
-                </form>
-            
-                <p><i>Status: Sedang menunggu persetujuan admin</i></p>
-            
-            <?php exit; // STOP, jangan tampilkan tabel barang ?>
-            <?php endif; ?>
-        <div style="flex:1">
-            <table class="table table-bordered table-striped">
-                <tr>
+        <div class="kategori-select">
+            <form method="GET">
+                <select name="kategori" class="kategori-slct" id="kategoriSelect">
+                    <option value="">Cari Kategori</option>
+                    <option value="1">Alat Komputer</option>
+                    <option value="2">Furniture</option>
+                    <option value="3">Perangkat</option>
+                    <option value="4">Elektronik</option>
+                    <option value="5">Pendingin</option>
+                </select>
+            </form>
+        </div>
+        <div class="table-container">
+            <table>
+                <tr> 
                     <th>No</th>
-                    <th>Kode</th>
+                    <th>Kode Inventaris</th>
                     <th>Nama Barang</th>
                     <th>Merk</th>
+                    <th>Tipe</th>
+                    <th>Spesifikasi</th>
                     <th>Jumlah</th>
-                    <th>Lokasi</th>
-                    <th>Aksi</th>
+                    <th>Keterangan</th>
+                    <th>Tersedia</th>
                 </tr>
-                <?php
-                $no = 1;
-                while ($row = mysqli_fetch_assoc($result)) {
-                ?>
+                    <?php
+                    $no = 1;
+                    while ($row = mysqli_fetch_assoc($result)) {
+                    ?>
                 <tr>
                     <td><?= $no++; ?></td>
                     <td><?= $row['kode_inventaris']; ?></td>
                     <td><?= $row['nama_barang']; ?></td>
                     <td><?= $row['merk']; ?></td>
+                    <td><?= $row['tipe']; ?></td>
+                    <td><?= $row['spesifikasi']; ?></td>
                     <td><?= $row['jumlah']; ?></td>
-                    <td><?= $row['lokasi']; ?></td>
-                    <td>
-                        <?php if ($row['jumlah'] > 0) { ?>
-                        <form action="pinjam.php" method="POST">
-                            <input type="hidden" name="barang_id" value="<?= $row['id']; ?>">
-                            <input type="hidden" name="jumlah" value="1">
-                            <input type="hidden" name="nama" value="User">
-                            <input type="hidden" name="keperluan" value="Peminjaman">
-                            <button type="submit">Pinjam</button>
-                        </form>
-                        <?php } else { ?>
-                            Habis
-                        <?php } ?>
-                <?php } ?>
-                    </td>
+                    <td><?= $row['keterangan']; ?></td>
+                    <td><?= $row['tersedia'] == 1 ? 'Iya' : 'Tidak'; ?></td>
+                    <?php } ?>
                 </tr>
             </table>
         </div>
     </div>
-</div>
 <a href="index.php" class="text-decoration-none text-muted">
     ← Kembali ke Index
 </a>

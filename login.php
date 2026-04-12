@@ -30,9 +30,11 @@
     <title>Login Page</title>
     <style>
         body {
-            background: #f1f5f9;
-            min-height: 100vh;
-            padding: 20px;
+            height: 100vh;
+            background: linear-gradient(135deg, #0d47a1, #1976d2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .welcome-header {
             text-align: center;
@@ -43,29 +45,31 @@
 </head>
 <body>
     <div class="login-container">
-        <form autocomplete="off"  action="proses_login.php" method="POST" class="login-form">
-            <h1>Selamat Datang<br>di Inventaris<br></h1>
-            <h2>Laboratorium Informatika</h2>
-            <p><?php echo $login_message; ?></p>
-            <div class="input-group">
-                <label for="username" name="username">Username</label>
-                <input type="text" name="username" required>
-            </div>
-
-            <div class="input-group">
-                <label for="password" name="password">Password</label>
-                <input type="password" name="password" required>
-            </div>
-
-            <button type="submit" name="login" class="button-group" >Login</button>
-
-            <p class="register-text">
-                Belum punya akun? <a href="register.php">Daftar disini</a>
-            </p>
-            <p class="register-text">
-                <a href="index.php">back to index</a>
-            </p>
-        </form>
+        <div class="login-box">
+            <form autocomplete="off"  action="proses_login.php" method="POST" class="login-form">
+                <h1>Selamat Datang<br>di Inventaris<br></h1>
+                <h2>Laboratorium Informatika</h2>
+                <p><?php echo $login_message; ?></p>
+                <div class="input-group">
+                    <label for="username" name="username">Username</label>
+                    <input type="text" name="username" required>
+                </div>
+    
+                <div class="input-group">
+                    <label for="password" name="password">Password</label>
+                    <input type="password" name="password" required>
+                </div>
+    
+                <button type="submit" name="login" class="button-group" >Login</button>
+    
+                <p class="register-text">
+                    Belum punya akun? <a href="register.php">Daftar disini</a>
+                </p>
+                <p class="register-text">
+                    <a href="index.php">back to index</a>
+                </p>
+            </form>
+        </div>
     </div>
 </body>
 </html>

@@ -83,7 +83,7 @@
                         <option value="">Cari Kategori</option>
                         <option value="1">Alat Komputer</option>
                         <option value="2">Furniture</option>
-                        <option value="3">Perangkat</option>
+                        <option value="3">Perangkat Audio</option>
                         <option value="4">Elektronik</option>
                         <option value="5">Pendingin</option>
                     </select>
@@ -93,49 +93,59 @@
                     <button class="btn-primary"><a href="export_excel.php">Export Excel</a></button>
                     <button class="btn-primary"><a href="create.php">Tambah Data</a></button>
                 </div>
+            <?php if (isset($_GET['delete']) && $_GET['delete'] == 'success'): ?>
+            <div class="alert alert-success alert-dismissible fade show notif-fix text-center">
+            Data berhasil dihapus!
+            </div>
+            <?php endif; ?>
             <div class="table-container">
+                <h3>Inventaris Laboratorium Informatika</h3>
                 <table>
-                    <tr> 
-                        <th>No</th>
-                        <th>Kode Inventaris</th>
-                        <th>Nama Barang</th>
-                        <th>Merk</th>
-                        <th>Tipe</th>
-                        <th>Spesifikasi</th>
-                        <th>Jumlah</th>
-                        <th>Kondisi</th>
-                        <th>Lokasi</th>
-                        <th>Tahun Perolehan</th>
-                        <th>Keterangan</th>
-                        <th>Tersedia</th>
-                        <th>Aksi</th>
-                    </tr>
+                    <thead>
+                        <tr class="table-header"> 
+                            <th>No</th>
+                            <th>Kode Inventaris</th>
+                            <th>Nama Barang</th>
+                            <th>Merk</th>
+                            <th>Tipe</th>
+                            <th>Spesifikasi</th>
+                            <th>Jumlah</th>
+                            <th>Kondisi</th>
+                            <th>Lokasi</th>
+                            <th>Tahun Perolehan</th>
+                            <th>Keterangan</th>
+                            <th>Tersedia</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
                         <?php
                         $no = 1;
                         while ($row = mysqli_fetch_assoc($result)) {
                         ?>
-                    <tr>
-                        <td><?= $no++; ?></td>
-                        <td><?= $row['kode_inventaris']; ?></td>
-                        <td><?= $row['nama_barang']; ?></td>
-                        <td><?= $row['merk']; ?></td>
-                        <td><?= $row['tipe']; ?></td>
-                        <td><?= $row['spesifikasi']; ?></td>
-                        <td><?= $row['jumlah']; ?></td>
-                        <td><?= $row['kondisi']; ?></td>
-                        <td><?= $row['lokasi']; ?></td>
-                        <td><?= $row['tahun_perolehan']; ?></td>
-                        <td><?= $row['keterangan']; ?></td>
-                        <td><?= $row['tersedia'] == 1 ? 'Iya' : 'Tidak'; ?></td>
-                        <td>
-                            <a class="btn-edit"   href="edit.php?id=<?=  $row['id'];?>">Edit</a> |
-                            <a class="btn-delete"  href="delete.php?id=<?=  $row['id'];?>"
-                                onclick="return confirm('Yakin mau hapus data ini?')"> 
-                                Delete
-                            </a>
-                        </td>
-                        <?php } ?>
-                    </tr>
+                    <tbody>
+                        <tr class="table-row">
+                            <td><?= $no++; ?></td>
+                            <td><?= $row['kode_inventaris']; ?></td>
+                            <td><?= $row['nama_barang']; ?></td>
+                            <td><?= $row['merk']; ?></td>
+                            <td><?= $row['tipe']; ?></td>
+                            <td><?= $row['spesifikasi']; ?></td>
+                            <td><?= $row['jumlah']; ?></td>
+                            <td><?= $row['kondisi']; ?></td>
+                            <td><?= $row['lokasi']; ?></td>
+                            <td><?= $row['tahun_perolehan']; ?></td>
+                            <td><?= $row['keterangan']; ?></td>
+                            <td><?= $row['tersedia'] == 1 ? 'Iya' : 'Tidak'; ?></td>
+                            <td>
+                                <a class="btn-edit"   href="edit.php?id=<?=  $row['id'];?>">Edit</a> |
+                                <a class="btn-delete"  href="delete.php?id=<?=  $row['id'];?>"
+                                    onclick="return confirm('Yakin mau hapus data ini?')"> 
+                                    Delete
+                                </a>
+                            </td>
+                            <?php } ?>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>

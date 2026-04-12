@@ -24,8 +24,8 @@
 
     $sql = "INSERT INTO barang (kode_inventaris, kategori_id, nama_barang, merk, tipe, spesifikasi, jumlah, kondisi, lokasi, tahun_perolehan, keterangan) VALUES ('$kode_inventaris', '$kategori_id', '$nama_barang', '$merk', '$tipe', '$spesifikasi', '$jumlah', '$kondisi', '$lokasi', '$tahun_perolehan', '$keterangan')";
     if (mysqli_query($conn, $sql)) {
-        $create_message = "Data berhasil ditambahkan";
-        $message_type = "success";
+        header("Location: create.php?create=success");
+        exit;
     } else {
         $create_message = "Data gagal ditambahkan";
         $message_type = "error";
@@ -46,6 +46,11 @@
     </div>
     
     <div class="form-container">
+        <?php if (isset($_GET['create']) && $_GET['create'] == 'success'): ?>
+        <div class="alert alert-success alert-dismissible fade show notif-fix text-center">
+        Data berhasil ditambahkan!
+        </div>
+        <?php endif; ?>
         <div class="form-header">
             <h2>Form Tambah Inventaris</h2>
             <p>Silakan lengkapi data inventaris baru</p>

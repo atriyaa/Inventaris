@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Mar 03, 2026 at 05:23 AM
+-- Generation Time: Apr 02, 2026 at 03:30 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.28
 
@@ -50,9 +50,9 @@ INSERT INTO `admin` (`id`, `username`, `email`, `password`) VALUES
 
 CREATE TABLE `barang` (
   `id` int NOT NULL,
+  `kategori_id` int DEFAULT NULL,
   `kode_inventaris` varchar(50) NOT NULL,
   `nama_barang` varchar(100) NOT NULL,
-  `kategori` varchar(50) DEFAULT NULL,
   `merk` varchar(100) DEFAULT NULL,
   `tipe` varchar(100) DEFAULT NULL,
   `spesifikasi` text,
@@ -69,30 +69,56 @@ CREATE TABLE `barang` (
 -- Dumping data for table `barang`
 --
 
-INSERT INTO `barang` (`id`, `kode_inventaris`, `nama_barang`, `kategori`, `merk`, `tipe`, `spesifikasi`, `jumlah`, `kondisi`, `lokasi`, `tahun_perolehan`, `keterangan`, `tersedia`, `create_at`) VALUES
-(10, 'KOM001', 'Monitor', 'Alat Komputer', 'LG', '', '', 12, 'Baik', 'LAB MM', '2026', 'Digunakan Mahasiswa', 1, '2026-02-28 15:39:25'),
-(11, 'KOM002', 'PC', 'Alat Komputer', 'Simbadda', '', 'Intel Core i5', 10, 'Baik', 'LAB MM', '2026', 'Digunakan Mahasiswa', 1, '2026-02-28 15:40:42'),
-(12, 'KOM003', 'PC', 'Alat Komputer', 'Enlight En-220', '', '', 2, 'Baik', 'LAB MM', '2026', 'Digunakan Mahasiswa', 1, '2026-02-28 15:41:56'),
-(13, 'FURN001', 'Kursi', 'Furniture', '', '', '', 21, 'Baik', 'LAB MM', '2018', 'Digunakan Mahasiswa', 1, '2026-02-28 15:43:18'),
-(14, 'FURN002', 'Meja', 'Furniture', '', '', '', 21, 'Cukup', 'LAB MM', '2018', 'Digunakan Mahasiswa', 1, '2026-02-28 15:43:53'),
-(15, 'FURN003', 'Kursi', 'Furniture', '', '', '', 0, 'Baik', 'LAB MM', '2019', 'Digunakan Dosen', 1, '2026-02-28 15:44:40'),
-(16, 'FURN004', 'Kursi', 'Furniture', '', '', '', 0, 'Baik', 'LAB Jarkom', '2019', 'Digunakan Dosen', 1, '2026-02-28 15:45:06'),
-(17, 'AUD001', 'Sound', 'Perangkat Audio', 'Borneo', '', '', 3, 'Baik', 'LAB MM', '2020', '', 1, '2026-02-28 15:46:12'),
-(18, 'KOMP004', 'Keyboard', 'Alat Komputer', 'Logitech', '', '', 15, 'Baik', 'LAB Jarkom', '2024', '', 1, '2026-03-01 04:10:21'),
-(19, 'KOMP0005', 'Keyboard', 'Alat Komputer', 'Logitech', '', '', 12, 'Baik', 'LAB MM', '2023', '', 1, '2026-03-01 04:11:10'),
-(20, 'KOMP0006', 'Mouse', 'Alat Komputer', 'Logitech', '', '', 12, 'Baik', 'LAB MM', '2024', '', 1, '2026-03-01 04:11:55'),
-(21, 'KOM007', 'Keyboard', 'Alat Komputer', 'Lenovo', '', '', 1, 'Baik', 'LAB Jarkom', '2023', '', 1, '2026-03-01 04:12:54'),
-(22, 'KOM008', 'Mouse', 'Alat Komputer', 'Logitech', '', '', 9, 'Baik', 'LAB Jarkom', '2024', '', 1, '2026-03-01 04:13:46'),
-(23, 'FURN005', 'Kursi', 'Furniture', '', '', '', 1, 'Baik', 'LAB Jarkom', '2023', 'Digunakan Aslab', 1, '2026-03-01 04:21:03'),
-(24, 'AUD002', 'HeadSet', 'Perangkat Audio', 'Rexus', '', '', 7, 'Baik', 'LAB Jarkom', '2023', '', 1, '2026-03-01 04:31:23'),
-(25, 'AUD003', 'HeadSet', 'Perangkat Audio', 'Mars', '', '', 2, 'Baik', 'LAB Jarkom', '2026', '', 1, '2026-03-01 04:36:07'),
-(26, 'KOMP008', 'Web Cam', 'Alat Komputer', 'Skype', '', '', 3, 'Baik', 'LAB Jarkom', '2023', '', 1, '2026-03-01 04:39:04'),
-(27, 'KOM009', 'Monitor', 'Alat Komputer', 'LG', '', '', 1, 'Baik', 'LAB Jarkom', '2023', 'Dipakai Dosen', 1, '2026-03-01 04:39:34'),
-(28, 'KOM10', 'Monitor', 'Alat Komputer', 'LG', '', '', 1, 'Baik', 'LAB Jarkom', '2024', 'Dipakai Aslab', 1, '2026-03-01 04:40:14'),
-(29, 'KOM11', 'Monitor', 'Alat Komputer', 'Qwerty', '', '', 1, 'Baik', 'LAB Jarkom', '2024', 'Dipakai Aslab', 1, '2026-03-01 04:40:48'),
-(30, 'KOM12', 'PC', 'Alat Komputer', 'VenomRX', '', '', 1, 'Baik', 'LAB Jarkom', '2024', 'Dipakai Dosen', 1, '2026-03-01 04:42:23'),
-(31, 'KOM13', 'PC', 'Alat Komputer', 'NEOX', '', '', 0, 'Baik', 'LAB Jarkom', '2024', '', 1, '2026-03-01 04:45:16'),
-(33, 'KOM14', 'Printer', 'Alat Komputer', 'Epson L3210', '', '', 0, 'Baik', 'LAB Jarkom', '2024', 'Dipakai anis', 1, '2026-03-01 04:48:00');
+INSERT INTO `barang` (`id`, `kategori_id`, `kode_inventaris`, `nama_barang`, `merk`, `tipe`, `spesifikasi`, `jumlah`, `kondisi`, `lokasi`, `tahun_perolehan`, `keterangan`, `tersedia`, `create_at`) VALUES
+(13, 1, 'KOM001', 'Monitor', 'LG', '', '', 12, 'Baik', 'LAB MM', '2024', 'Digunakan Mahasiswa', 1, '2026-03-14 02:58:20'),
+(14, 1, 'KOM002', 'PC', 'SIMBADDA', '', 'Intel Core I5', 10, 'Baik', 'LAB MM', '2024', '', 1, '2026-03-14 02:59:17'),
+(15, 1, 'KOM003', 'PC', 'ENLIGHT EN-220', '', '', 2, 'Baik', 'LAB MM', '2024', 'Digunakan Mahasiswa', 1, '2026-03-14 03:00:00'),
+(16, 2, 'FURN001', 'Kursi', '', '', '', 21, 'Baik', 'LAB MM', '2024', 'Digunakan Mahasiswa', 1, '2026-03-14 03:00:44'),
+(17, 2, 'FURN002', 'Meja', '', '', '', 21, 'Cukup', 'LAB MM', '2023', 'Digunakan Mahasiswa', 1, '2026-03-14 03:01:27'),
+(18, 2, 'FURN003', 'Kursi', '', '', '', 1, 'Baik', 'LAB MM', '2023', 'Digunakan Dosen', 1, '2026-03-14 03:02:48'),
+(19, 3, 'AUD001', 'Sound', 'Borneo', '', '', 2, 'Baik', 'LAB MM', '2023', '', 1, '2026-03-14 03:03:43'),
+(20, 4, 'ELK001', 'CCTV', '', '', '', 1, 'Baik', 'LAB MM', '2023', '', 1, '2026-03-14 03:04:20'),
+(21, 4, 'ELK002', 'CCTV', '', '', '', 2, 'Baik', 'LAB JARKOM', '2023', '', 1, '2026-03-14 03:04:43'),
+(22, 5, 'AC001', 'AC', 'PowerSonic', '', '', 1, 'Baik', 'LAB MM', '2023', '', 1, '2026-03-14 03:05:27'),
+(23, 5, 'AC002', 'AC', 'PowerSonic', '', '', 2, 'Baik', 'LAB JARKOM', '2023', '', 1, '2026-03-14 03:05:51'),
+(24, 1, 'KOM004', 'Keyboard', 'Logitech', '', '', 12, 'Baik', 'LAB MM', '2023', 'Digunakan Mahasiawa', 1, '2026-03-14 03:07:22'),
+(25, 1, 'KOM005', 'Mouse', 'Logitech', '', '', 12, 'Baik', 'LAB MM', '2023', 'Digunakan Mahasiswa', 1, '2026-03-14 03:07:51'),
+(26, 1, 'KOM006', 'Mouse', 'Logitech', '', '', 8, 'Baik', 'LAB JARKOM', '2023', '', 1, '2026-03-14 03:09:10'),
+(27, 1, 'KOM007', 'Keyboard', 'Logitech', '', '', 12, 'Baik', 'LAB JARKOM', '2023', '', 1, '2026-03-14 03:09:54'),
+(28, 1, 'KOM008', 'Keyboard', 'Lenovo', '', '', 1, 'Baik', 'LAB JARKOM', '2023', '', 1, '2026-03-14 03:11:14'),
+(29, 1, 'KOM009', 'Monitor', 'LG', '', '', 1, 'Baik', 'LAB JARKOM', '2024', '', 1, '2026-03-14 03:12:36'),
+(30, 1, 'KOM010', 'PC', 'LNEIX', '', '', 1, 'Baik', 'LAB JARKOM', '2024', '', 1, '2026-03-14 03:14:05'),
+(31, 1, 'KOM011', 'Printer', 'Epson', 'EpsonL3210', '', 1, 'Baik', 'LAB JARKOM', '2023', '', 1, '2026-03-14 03:15:03'),
+(32, 1, 'KOM012', 'PC', 'No Merk', '', '', 1, 'Baik', 'LAB JARKOM', '2024', '', 1, '2026-03-14 03:15:39'),
+(33, 1, 'KOM013', 'Web Cam', '', '', '', 2, 'Baik', 'LAB JARKOM', '2024', '', 1, '2026-03-14 03:16:10'),
+(34, 3, 'AUD002', 'Headset', 'Rexus', '', '', 7, 'Baik', 'LAB JARKOM', '2023', '', 1, '2026-03-14 03:17:05'),
+(35, 3, 'AUD003', 'Headset', 'Mars', '', '', 2, 'Baik', 'LAB JARKOM', '2026', '', 1, '2026-03-14 03:18:09'),
+(36, 1, 'KOM015', 'UPS', 'APC ', '', '', 1, 'Baik', 'LAB JARKOM', '2024', '', 1, '2026-03-14 03:18:47'),
+(37, 1, 'KOM016', 'UPS', 'Prolink', '', '', 1, 'Baik', 'LAB JARKOM', '2024', '', 1, '2026-03-14 03:19:14'),
+(39, 4, 'ELK003', 'TpLink', 'TpLink', '', '', 1, 'Baik', 'LAB JARKOM', '2024', '', 1, '2026-03-14 03:20:57'),
+(40, 4, 'ELK004', 'Router', '', '', '', 4, 'Baik', 'LAB JARKOM', '2024', '2 lengkap sama kabel 2 nya tidak', 1, '2026-03-14 03:21:38');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kategori`
+--
+
+CREATE TABLE `kategori` (
+  `id` int NOT NULL,
+  `nama_kategori` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `kategori`
+--
+
+INSERT INTO `kategori` (`id`, `nama_kategori`) VALUES
+(1, 'alat_komputer'),
+(2, 'furniture'),
+(3, 'perangkat_audio'),
+(4, 'elektronik'),
+(5, 'pendingin');
 
 -- --------------------------------------------------------
 
@@ -110,18 +136,6 @@ CREATE TABLE `peminjaman` (
   `tanggal_kembali` datetime DEFAULT NULL,
   `status` enum('dipinjam','dikembalikan') DEFAULT 'dipinjam'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `peminjaman`
---
-
-INSERT INTO `peminjaman` (`id`, `nama_peminjam`, `keperluan`, `jumlah`, `barang_id`, `tanggal_pinjam`, `tanggal_kembali`, `status`) VALUES
-(1, 'User', 'Peminjaman', 1, 33, '2026-03-02 12:20:02', NULL, 'dipinjam'),
-(2, 'User', 'Peminjaman', 1, 23, '2026-03-02 12:25:55', NULL, 'dipinjam'),
-(3, 'User', 'Peminjaman', 1, 16, '2026-03-02 12:27:02', NULL, 'dipinjam'),
-(4, 'User', 'Peminjaman', 1, 15, '2026-03-02 12:27:12', NULL, 'dipinjam'),
-(5, 'User', 'Peminjaman', 1, 33, '2026-03-02 14:31:42', NULL, 'dipinjam'),
-(6, 'User', 'Peminjaman', 1, 31, '2026-03-03 11:33:56', NULL, 'dipinjam');
 
 -- --------------------------------------------------------
 
@@ -165,9 +179,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_users`, `username`, `email`, `password`, `created_at`, `role`) VALUES
-(1, 'anisaa', 'okieys@gmail.com', '1234643', '2026-02-24 12:06:21', 'user'),
+(1, 'sakila', 'okieys@gmail.com', '1234643', '2026-02-24 12:06:21', 'user'),
 (5, 'ivan', 'ivanntrya@gmail.com', '20404', '2026-02-24 12:20:09', 'user'),
-(8, 'kila', 'ksjlie@gmail.com', '123', '2026-02-24 13:05:18', 'user');
+(8, 'kila', 'ksjlie@gmail.com', '123', '2026-02-24 13:05:18', 'user'),
+(9, 'ivanKeren', 'ivan@gmail.com', '210424', '2026-03-03 08:18:25', 'user');
 
 --
 -- Indexes for dumped tables
@@ -184,7 +199,14 @@ ALTER TABLE `admin`
 --
 ALTER TABLE `barang`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `kode_inventaris` (`kode_inventaris`);
+  ADD UNIQUE KEY `kode_inventaris` (`kode_inventaris`),
+  ADD KEY `fk_barang_kategori` (`kategori_id`);
+
+--
+-- Indexes for table `kategori`
+--
+ALTER TABLE `kategori`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `peminjaman`
@@ -221,13 +243,19 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `barang`
 --
 ALTER TABLE `barang`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+
+--
+-- AUTO_INCREMENT for table `kategori`
+--
+ALTER TABLE `kategori`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `peminjaman`
 --
 ALTER TABLE `peminjaman`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `peminjaman_lab`
@@ -239,11 +267,17 @@ ALTER TABLE `peminjaman_lab`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_users` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_users` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `barang`
+--
+ALTER TABLE `barang`
+  ADD CONSTRAINT `fk_barang_kategori` FOREIGN KEY (`kategori_id`) REFERENCES `kategori` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `peminjaman`

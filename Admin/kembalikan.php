@@ -28,5 +28,5 @@ mysqli_query($conn, "
     WHERE id = {$p['barang_id']}
 ");
 
-header("Location: peminjaman.php");
+header("Location: peminjaman.php?return=success");
 ?>
