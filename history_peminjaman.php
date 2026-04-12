@@ -90,6 +90,7 @@ if (!$result) {
                 <div class="user">Selamat Datang, <br><?php echo $_SESSION["username"];?></div>
             </div>
                 <div class="table-container">
+                    <h3>Inventaris Laboratorium Informatika</h3>
                     <table>
                         <thead>
                             <tr class="table-header">
@@ -99,6 +100,7 @@ if (!$result) {
                                 <th>Jumlah</th>
                                 <th>Keperluan</th>
                                 <th>Tanggal Pinjam</th>
+                                <th>Tanggal Kembali</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -114,6 +116,7 @@ if (!$result) {
                             <td><?= $row['jumlah']; ?></td>
                             <td><?= $row['keperluan']; ?></td>
                             <td><?= $row['tanggal_pinjam']; ?></td> 
+                            <td><?= $row['tanggal_kembali']; ?></td> 
                             <td>
                                 <?php 
                                 if ($row['status'] == 'dikembalikan') {

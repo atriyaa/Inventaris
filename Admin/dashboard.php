@@ -36,7 +36,14 @@
         $where_sql 
         ORDER BY barang.id DESC
     ";
-    $result = mysqli_query($conn, $query)
+    $result = mysqli_query($conn, $query);
+
+    $sql = "SELECT * FROM admin";
+    $result_admin = $conn->query($sql);
+
+    if (!$result) {
+    die("Query error: " . $conn->error);
+}
 
 ?>
 <!DOCTYPE html>
@@ -55,7 +62,7 @@
             <div class="menu-group">
                 <p class="menu-title">MAIN</p>
                 <ul>
-                    <li><a href="#" class="menu-item <?=  $page=='dashboard.php'?'active':''?>">Dashboard</a></li>
+                    <li><a href="Admin/dashboard.php" class="menu-item <?=  $page=='dashboard.php'?'active':''?>">Dashboard</a></li>
                     <li><a href="../pinjam.php" class="menu-item  <?=  $page=='pinjam.php'?'active':''?>">Pinjam</a></li>
                     <li><a href="peminjaman.php" class="menu-item  <?=  $page=='peminjaman.php'?'active':''?>">Peminjaman Aktif</a></li>
                     <li><a href="../history_peminjaman.php" class="menu-item  <?=  $page=='history_peminjaman.php'?'active':''?>">History Peminjaman</a></li>
@@ -63,7 +70,11 @@
             </div>
             <div class="menu-group">
                 <p class="menu-title">TEAMS</p>
-                <!-- nanti ambil di database admin -->
+                    <ul>
+                        <?php while ($row = $result_admin->fetch_assoc()): ?>
+                        <li class="menu-item"><?= $row['username']; ?></li>
+                        <?php endwhile; ?>
+                    </ul>
             </div>
             <div class="logout">
                 <a href="../logout.php" class="menu-item logout">Logout</a>

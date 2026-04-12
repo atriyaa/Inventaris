@@ -65,9 +65,10 @@
 }
 
 .menu-title {
-    font-size: 12px;
-    color: #94a3b8;
+    font-size: 14px;
+    color: #696891;
     margin-bottom: 5px;
+    font-weight: bolder;
 }
 
 .menu-item {

@@ -12,7 +12,7 @@
          window.location='dashboard.php';</script>";
     } else {
         mysqli_query($conn, "DELETE FROM barang WHERE id='$id'");
-        header("Location: dashboard.php");
+        header("Location: dashboard.php?delete=success");
     }
 
     $query = "DELETE FROM barang WHERE id = $id";

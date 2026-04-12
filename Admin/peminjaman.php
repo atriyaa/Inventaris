@@ -54,6 +54,7 @@ ORDER BY peminjaman.id DESC
                 </div>
                 <?php endif; ?>
                 <div class="table-container">
+                    <h3>Inventaris Laboratorium Informatika</h3>
                     <table>
                         <thead>
                             <tr class="table-header">
