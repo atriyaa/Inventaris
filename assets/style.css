@@ -402,18 +402,6 @@ table {
     background-color: #0056b3;
 }
 
-.register-text {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 14px;
-    color: #666;
-}
-
-.register-text a {
-    color: #007b;
-    text-decoration: none;
-    font-weight: bold;
-}
 /* Button Styles */
 .btn-tambah {
     background: #2563eb;
@@ -472,9 +460,6 @@ table {
     margin-bottom: 5px;
 }
 
-.form-group.full-width {
-    grid-column: 1 / -1;
-}
 
 .form-group label {
     font-size: 14px;
