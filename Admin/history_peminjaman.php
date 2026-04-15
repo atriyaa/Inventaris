@@ -41,12 +41,10 @@
     $total_halaman = ceil($total_data / $limit);
 
 $query = mysqli_query($conn,"
-    SELECT peminjaman.*, barang.nama_barang 
-    FROM peminjaman
-    JOIN barang ON peminjaman.barang_id = barang.id
-    $where_sql 
-    ORDER BY peminjaman.id DESC
-    LIMIT $limit OFFSET $offset
+SELECT peminjaman.*, barang.nama_barang
+FROM peminjaman
+JOIN barang ON peminjaman.barang_id = barang.id
+ORDER BY peminjaman.id DESC
 ");
 ?>
 <!DOCTYPE html>
@@ -357,6 +355,16 @@ $query = mysqli_query($conn,"
             font-weight: 600;
         }
 
+        .status-kembali{
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-pinjam{
+            color: red;
+            font-weight: bold;
+        }
+
         .btn-action {
             padding: 5px 8px;
             border: none;
@@ -429,8 +437,8 @@ $query = mysqli_query($conn,"
             <li class="menu-header">MAIN NAVIGATION</li>
             <li class=""><a href="dashboard.php"><span> &nbsp; DASHBOARD</span></a></li>
             <li class=""><a href="../pinjam.php"><span> &nbsp; PINJAM BARANG</span></a></li>
-            <li class="active"><a href="peminjaman.php"><span> &nbsp; PEMINJAMAN AKTIF</span></a></li>
-            <li class=""><a href="history_peminjaman.php"><span> &nbsp; HISTORY PEMINJAMAN</span></a></li>
+            <li class=""><a href="peminjaman.php"><span> &nbsp; PEMINJAMAN AKTIF</span></a></li>
+            <li class="active"><a href="history_peminjaman.php"><span> &nbsp; HISTORY PEMINJAMAN</span></a></li>
         </ul>
     </aside>
 
@@ -438,12 +446,12 @@ $query = mysqli_query($conn,"
         <header>
             <i class="fa fa-bars" id="toggle-btn"></i>
             <div style="font-size: 14px;">
-                Ahmad Jhony - administrator &nbsp; <i class="fa fa-sign-out"><a href="logout.php"> LOGOUT</a></i> 
+                Ahmad Jhony - administrator &nbsp; <i class="fa fa-sign-out"><a href="logout.php" style="color: #000000;"> LOGOUT</a></i> 
             </div>
         </header>
 
         <div class="breadcrumb">
-            <h2 style="font-size: 18px; color: #333;">Peminjaman <small style="color: #999; font-weight: 300;">Data Peminjaman</small></h2>
+            <h2 style="font-size: 18px; color: #333;">Peminjaman <small style="color: #999; font-weight: 300;">History Data Peminjaman</small></h2>
             <div><i class="fa fa-home"></i> <a href="logout.php">Home</a> > <a href="dashboard.php">Dashboard</a></div>
         </div>
 
@@ -463,19 +471,22 @@ $query = mysqli_query($conn,"
                 <table>
                     <thead>
                         <tr>
-                                <th>No</th>
-                                <th>Nama Barang</th>
-                                <th>Nama Peminjam</th>
-                                <th>Jumlah</th>
-                                <th>Keperluan</th>
-                                <th>Tanggal Pinjam</th>
-                                <th>Aksi</th>
+                            <th>No</th>
+                            <th>Nama Barang</th>
+                            <th>Nama Peminjam</th>
+                            <th>Jumlah</th>
+                            <th>Keperluan</th>
+                            <th>Tanggal Pinjam</th>
+                            <th>Tanggal Kembali</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
-                        <?php
+                    <?php
+                    if ($query->num_rows> 0) {
                         $no = $offset + 1;
                         while ($row = mysqli_fetch_assoc($query)) {
-                        ?>
+                    ?>
+
                     <tbody>
                         <tr>
                             <td><?= $no++; ?></td>
@@ -484,13 +495,19 @@ $query = mysqli_query($conn,"
                             <td><?= $row['jumlah']; ?></td>
                             <td><?= $row['keperluan']; ?></td>
                             <td><?= $row['tanggal_pinjam']; ?></td> 
+                            <td><?= $row['tanggal_kembali']; ?></td> 
                             <td>
-                                <a class="btn-kembali"  href="kembalikan.php?id=<?= $row['id']; ?>">
-                                    Kembalikan
-                                </a>
-                            </td
+                                <?php 
+                                if ($row['status'] == 'dikembalikan') {
+                                    echo "<span class='status-kembali'>Kembali</span>";
+                                } else {
+                                    echo "<span class='status-pinjam'>Dipinjam</span>";
+                                }
+                                ?>
+                            </td>
                             <?php } ?>
                         </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
 

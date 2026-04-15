@@ -18,7 +18,7 @@
     $query = "DELETE FROM barang WHERE id = $id";
 
     if (mysqli_query($conn, $query)) {
-        header("Location: dashboard.php?delete=success");
+        header("Location: dashboard.php?pesan=hapus");
         exit();
     } else {
         echo "Gagal menghapus data";
