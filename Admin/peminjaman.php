@@ -489,7 +489,7 @@ $query = mysqli_query($conn,"
                                 <a class="btn-kembali"  href="kembalikan.php?id=<?= $row['id']; ?>">
                                     Kembalikan
                                 </a>
-                            </td
+                            </td>
                             <?php } ?>
                         </tr>
                     </tbody>

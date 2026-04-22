@@ -172,7 +172,7 @@ header a{
 
 .card {
     background: white;
-    border-radius: 4px;
+    border-radius: 10px;
     border-top: 3px solid var(--secondary-blue);
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     padding: 20px;
@@ -227,7 +227,9 @@ tr, td, a{
 
 .card-header {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 20px;
 }

@@ -88,12 +88,13 @@ $query = mysqli_query($conn,"
                     <div class="alert-container">
                         <?php if ($_GET['return'] == 'success') ?>
                             <div class="alert alert-success">
-                                <i class="fa fa-check-circle"></i> Data barang berhasil <strong>dikembalikan</strong>!
+                                <i class="fa fa-check-circle"></i> Data perawatan berhasil disimpan <strong>dikembalikan</strong>!
                             </div>
                     </div>
                 <?php endif; ?>
-                    <div class="card-header">
-                    <h3 style="font-size: 16px;">Barang</h3>
+                <div class="card-header">
+                    <button class="btn-tambah" ><a href="form_perawatan.php">+ Tambah Perawatan</a></button>
+                    <button class="btn-tambah"> <a href="export_excel.php"> > Export Excel</a></button>
                 </div>
                 <table>
                     <thead>
