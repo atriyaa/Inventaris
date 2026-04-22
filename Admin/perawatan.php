@@ -51,13 +51,11 @@ $query = mysqli_query($conn,"
 ");
 ?>
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventaris Laboratorium Informatika</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>perawatan</title>
     <link rel="stylesheet" href="/assets/style2.css">
 </head>
 <body>
@@ -71,13 +69,7 @@ $query = mysqli_query($conn,"
             </div>
         </div>
         
-        <ul class="sidebar-menu">
-            <li class="menu-header">MAIN NAVIGATION</li>
-            <li class=""><a href="dashboard.php"><span> &nbsp; DASHBOARD</span></a></li>
-            <li class=""><a href="../pinjam.php"><span> &nbsp; PINJAM BARANG</span></a></li>
-            <li class=""><a href="peminjaman.php"><span> &nbsp; PEMINJAMAN AKTIF</span></a></li>
-            <li class="active"><a href="history_peminjaman.php"><span> &nbsp; HISTORY PEMINJAMAN</span></a></li>
-        </ul>
+        <?php include '../include/menu.php'; ?>
     </aside>
 
     <main>

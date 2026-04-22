@@ -39,7 +39,7 @@
     $row_total = mysqli_fetch_assoc($result_total);
     $total_data = $row_total['total'];
     $total_halaman = ceil($total_data / $limit);
-
+$where_sql = "WHERE peminjaman.status = 'dipinjam'";
 $query = mysqli_query($conn,"
     SELECT peminjaman.*, barang.nama_barang 
     FROM peminjaman
@@ -48,6 +48,7 @@ $query = mysqli_query($conn,"
     ORDER BY peminjaman.id DESC
     LIMIT $limit OFFSET $offset
 ");
+
 ?>
 <!DOCTYPE html>
 <html lang="id">

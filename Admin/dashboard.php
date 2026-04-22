@@ -1,10 +1,10 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
     session_start();
-    if (!isset($_SESSION['admin'])) {
-        header("Location: ../login.php");
-        exit;
-    }
+    // if (!isset($_SESSION['admin'])) {
+    //     header("Location: ../login.php");
+    //     exit;
+    // }
     $lab = $_GET['lab'] ?? null;
     $filter = $_GET['filter'] ?? 'all';
     $filter = mysqli_real_escape_string($conn, $filter);
@@ -397,18 +397,12 @@
         <div class="user-panel">
             <img src="image/rooney.jpg" alt="User">
             <div>
-                <p style="color: white; font-weight: 600;">Ahmad Jhony</p>
+                <p style="color: white; font-weight: 600;">Halo, <?php echo $admin['username']; ?></p>
                 <small style="color: #2ecc71;"><i class="fa fa-circle"></i> Online</small>
             </div>
         </div>
-        
-        <ul class="sidebar-menu">
-            <li class="menu-header">MAIN NAVIGATION</li>
-            <li class="active"><a href="dashboard.php"><span> &nbsp; DASHBOARD</span></a></li>
-            <li class=""><a href="../pinjam.php"><span> &nbsp; PINJAM BARANG</span></a></li>
-            <li class=""><a href="peminjaman.php"><span> &nbsp; PEMINJAMAN AKTIF</span></a></li>
-            <li class=""><a href="history_peminjaman.php"><span> &nbsp; HISTORY PEMINJAMAN</span></a></li>
-        </ul>
+        <?php include '../include/menu.php'; ?>
+
     </aside>
 
     <main>
