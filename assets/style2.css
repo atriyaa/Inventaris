@@ -103,15 +103,16 @@ aside, main {
 }
 
 .sidebar-menu li {
-    padding: 12px 20px;
-    font-size: 14px;
-    cursor: pointer;
     transition: 0.3s;
 }
 
-.sidebar-menu a{
+.sidebar-menu li a{
+    display: block;
+    padding: 10px 20px;
     color: #f4f6f9;
     text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
 }
 
 .sidebar-menu li:hover, .sidebar-menu li.active {
@@ -185,7 +186,7 @@ header a{
 
 .alert {
     padding: 12px 20px;
-    border-radius: 4px;
+    border-radius: 20px;
     font-size: 14px;
     display: flex;
     align-items: center;
@@ -200,6 +201,7 @@ tr, td, a{
 /* Warna Hijau untuk Hapus (Sukses) */
 .alert-success {
     background-color: #dff0d8;
+    border-radius: 20px;
     color: #3c763d;
     border-color: #d6e9c6;
     border-left-color: #2ecc71;

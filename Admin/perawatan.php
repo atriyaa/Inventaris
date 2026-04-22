@@ -84,13 +84,10 @@ $query = mysqli_query($conn,"
 
         <div class="content-wrapper">
             <div class="card">
-                <?php if (isset($_GET['return'])): ?>
-                    <div class="alert-container">
-                        <?php if ($_GET['return'] == 'success') ?>
-                            <div class="alert alert-success">
-                                <i class="fa fa-check-circle"></i> Data perawatan berhasil disimpan <strong>dikembalikan</strong>!
-                            </div>
-                    </div>
+                <?php if (isset($_GET['create']) && $_GET['create'] == 'success'): ?>
+                <div id='notif' style="background: green; color: white; padding: 10px;">
+                    Data berhasil ditambahkan!
+                </div>
                 <?php endif; ?>
                 <div class="card-header">
                     <button class="btn-tambah" ><a href="form_perawatan.php">+ Tambah Perawatan</a></button>
@@ -157,6 +154,12 @@ $query = mysqli_query($conn,"
             alertBox.style.display = 'none';
         }, 3000); // 3000ms = 3 detik
     }
+    setTimeout(function() {
+        let notif = document.getElementById("notif");
+        if (notif) {
+            notif.style.display = "none";
+        }
+    }, 3000); // 3000 ms = 3 detik
 </script>
 </body>
 </html>

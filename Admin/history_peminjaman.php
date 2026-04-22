@@ -62,23 +62,7 @@ $query = mysqli_query($conn,"
 </head>
 <body>
     <?php $page = basename($_SERVER['PHP_SELF']); ?>
-    <aside>
-        <div class="user-panel">
-            <img src="image/rooney.jpg" alt="User">
-            <div>
-                <p style="color: white; font-weight: 600;">Ahmad Jhony</p>
-                <small style="color: #2ecc71;"><i class="fa fa-circle"></i> Online</small>
-            </div>
-        </div>
-        
-        <ul class="sidebar-menu">
-            <li class="menu-header">MAIN NAVIGATION</li>
-            <li class=""><a href="dashboard.php"><span> &nbsp; DASHBOARD</span></a></li>
-            <li class=""><a href="../pinjam.php"><span> &nbsp; PINJAM BARANG</span></a></li>
-            <li class=""><a href="peminjaman.php"><span> &nbsp; PEMINJAMAN AKTIF</span></a></li>
-            <li class="active"><a href="history_peminjaman.php"><span> &nbsp; HISTORY PEMINJAMAN</span></a></li>
-        </ul>
-    </aside>
+    <?php include "../include/sidebar.php" ?>
 
     <main>
         <header>

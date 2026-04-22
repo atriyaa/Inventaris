@@ -15,7 +15,7 @@
 
     $sql = "INSERT INTO perawatan(tanggal_perbaikan, deskripsi, id) VALUES ('$tanggal_perbaikan', '$deskripsi', '$nama_barang')";
     if (mysqli_query($conn, $sql)) {
-        header("Location: form_perawatan.php?create=success");
+        header("Location: perawatan.php?create=success");
         exit;
     } else {
         $create_message = "Data gagal ditambahkan";
@@ -29,7 +29,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>silahkan Tambah Data Inventaris</title>
-    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="../assets/style2.css">
     <style>
         body{
             background-color: #f4f7fa;
@@ -242,11 +242,6 @@
             <p><a href="dashboard.php">Dashboard</a> <a href="form_perawatan.php"> > Tambah Data Perawatan</a></p>
         </div>
         <div class="card-form">
-            <?php if (isset($_GET['create']) && $_GET['create'] == 'success'): ?>
-            <div class="alert alert-success alert-dismissible fade show notif-fix text-center">
-            Data berhasil ditambahkan!
-            </div>
-            <?php endif; ?>
             <form autocomplete="off"  method="POST">
                 <div class="form-grid">
                     <div class="input-group">
