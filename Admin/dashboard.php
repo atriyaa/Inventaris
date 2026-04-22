@@ -393,17 +393,7 @@
 </head>
 <body>
     <?php $page = basename($_SERVER['PHP_SELF']); ?>
-    <aside>
-        <div class="user-panel">
-            <img src="image/rooney.jpg" alt="User">
-            <div>
-                <p style="color: white; font-weight: 600;">Halo, <?php echo $admin['username']; ?></p>
-                <small style="color: #2ecc71;"><i class="fa fa-circle"></i> Online</small>
-            </div>
-        </div>
-        <?php include '../include/menu.php'; ?>
-
-    </aside>
+    <?php include "../include/sidebar.php" ?>
 
     <main>
         <header>
