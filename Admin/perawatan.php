@@ -32,8 +32,8 @@
 
     // Hitung total data untuk tahu jumlah halaman
     $query_total = "SELECT COUNT(*) AS total 
-                    FROM peminjaman 
-                    JOIN barang ON peminjaman.barang_id = barang.id 
+                    FROM perawatan
+                    JOIN barang ON perawatan.id = barang.id 
                     $where_sql";
     $result_total = mysqli_query($conn, $query_total);
     $row_total = mysqli_fetch_assoc($result_total);
@@ -42,12 +42,9 @@
 
 $where_sql = "WHERE peminjaman.status = 'dikembalikan'";
 $query = mysqli_query($conn,"
-    SELECT peminjaman.*, barang.nama_barang 
-    FROM peminjaman
-    JOIN barang ON peminjaman.barang_id = barang.id
-    $where_sql 
-    ORDER BY peminjaman.id DESC
-    LIMIT $limit OFFSET $offset
+    SELECT tanggal_perbaikan, deskripsi, nama_barang
+    FROM perawatan
+    inner join barang on perawatan.id = barang.id
 ");
 ?>
 <!DOCTYPE html>
@@ -81,7 +78,7 @@ $query = mysqli_query($conn,"
         </header>
 
         <div class="breadcrumb">
-            <h2 style="font-size: 18px; color: #333;">Peminjaman <small style="color: #999; font-weight: 300;">History Data Peminjaman</small></h2>
+            <h2 style="font-size: 18px; color: #333;">Perawatan <small style="color: #999; font-weight: 300;">History Data perawatan</small></h2>
             <div><i class="fa fa-home"></i> <a href="logout.php">Home</a> > <a href="dashboard.php">Dashboard</a></div>
         </div>
 
@@ -103,12 +100,8 @@ $query = mysqli_query($conn,"
                         <tr>
                             <th>No</th>
                             <th>Nama Barang</th>
-                            <th>Nama Peminjam</th>
-                            <th>Jumlah</th>
-                            <th>Keperluan</th>
-                            <th>Tanggal Pinjam</th>
-                            <th>Tanggal Kembali</th>
-                            <th>Aksi</th>
+                            <th>tanggal perawatan</th>
+                            <th>deskripsi</th>
                         </tr>
                     </thead>
                     <?php
@@ -121,20 +114,8 @@ $query = mysqli_query($conn,"
                         <tr>
                             <td><?= $no++; ?></td>
                             <td><?= $row['nama_barang']; ?></td>
-                            <td><?= $row['nama_peminjam']; ?></td>
-                            <td><?= $row['jumlah']; ?></td>
-                            <td><?= $row['keperluan']; ?></td>
-                            <td><?= $row['tanggal_pinjam']; ?></td> 
-                            <td><?= $row['tanggal_kembali']; ?></td> 
-                            <td>
-                                <?php 
-                                if ($row['status'] == 'dikembalikan') {
-                                    echo "<span class='status-kembali'>Kembali</span>";
-                                } else {
-                                    echo "<span class='status-pinjam'>Dipinjam</span>";
-                                }
-                                ?>
-                            </td>
+                            <td><?= $row['tanggal_perbaikan']; ?></td>
+                            <td><?= $row['deskripsi']; ?></td>
                             <?php } ?>
                         </tr>
                         <?php } ?>
