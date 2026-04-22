@@ -94,15 +94,15 @@ $query = mysqli_query($conn,"
                 <?php endif; ?>
                 <div class="card-header">
                     <button class="btn-tambah" ><a href="form_perawatan.php">+ Tambah Perawatan</a></button>
-                    <button class="btn-tambah"> <a href="export_excel.php"> > Export Excel</a></button>
+                    <button class="btn-tambah"> <a href="export_perawatan.php"> > Export Excel</a></button>
                 </div>
                 <table>
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>Nama Barang</th>
-                            <th>tanggal perawatan</th>
-                            <th>deskripsi</th>
+                            <th>Tanggal Perawatan</th>
+                            <th>Deskripsi</th>
                         </tr>
                     </thead>
                     <?php
@@ -110,7 +110,6 @@ $query = mysqli_query($conn,"
                         $no = $offset + 1;
                         while ($row = mysqli_fetch_assoc($query)) {
                     ?>
-
                     <tbody>
                         <tr>
                             <td><?= $no++; ?></td>
