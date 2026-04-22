@@ -1,0 +1,363 @@
+:root {
+    --primary-blue: #2c3e50; /* Biru Tua Akademis */
+    --secondary-blue: #3498db; /* Biru Terang */
+    --light-blue: #ecf0f1;
+    --sidebar-dark: #222d32;
+    --white: #ffffff;
+    --gray-text: #7f8c8d;
+    --border-color: #dee2e6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f6f9;
+}
+
+/* --- SIDEBAR --- */
+aside {
+    width: 250px;
+    background-color: var(--sidebar-dark);
+    color: #b8c7ce;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1001; /* Di atas segalanya */
+    overflow-y: auto; /* Agar menu bisa di-scroll jika kepanjangan */
+    transition: width 0.3s ease;
+}
+
+.user-panel {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #374850;
+}
+
+.user-panel img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-left: 10px;
+    border: 2px solid var(--secondary-blue);
+}
+
+/* Class tambahan untuk efek toggle */
+#toggle-btn {
+    font-size: 20px;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+#toggle-btn:hover {
+    transform: scale(1.1); /* Efek membesar sedikit saat disentuh mouse */
+}
+
+aside.collapsed {
+    width: 70px; /* Lebar sidebar saat tertutup */
+}
+
+aside.collapsed + main {
+    margin-left: 70px;
+}
+
+aside.collapsed + main header {
+    left: 70px;
+}
+
+aside.collapsed .user-panel div, 
+aside.collapsed .sidebar-menu li span,
+aside.collapsed .menu-header {
+    display: none; /* Sembunyikan teks saat tertutup */
+}
+
+aside.collapsed .sidebar-menu li {
+    text-align: center;
+    padding: 15px 0;
+}
+
+aside.collapsed .sidebar-menu li i {
+    margin: 0;
+    font-size: 18px;
+}
+
+/* Transisi halus */
+aside, main {
+    transition: all 0.5s ease;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.sidebar-menu li {
+    padding: 12px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sidebar-menu a{
+    color: #f4f6f9;
+    text-decoration: none;
+}
+
+.sidebar-menu li:hover, .sidebar-menu li.active {
+    background-color: #1e282c;
+    color: white;
+    border-left: 3px solid var(--secondary-blue);
+}
+
+.menu-header {
+    font-size: 12px;
+    padding: 15px 20px 5px;
+    color: #4b646f;
+    text-transform: uppercase;
+}
+
+/* --- MAIN CONTENT --- */
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 250px; /* Sesuaikan dengan lebar aside */
+    padding-top: 50px;  /* Sesuaikan dengan tinggi header */
+    width: calc(100% - 250px); /* Memastikan lebar konten sisa layar */
+    transition: all 0.3s ease;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 250px; /* Header mulai setelah sidebar */
+    z-index: 1000;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    transition: all 0.3s ease;
+}
+header a{
+    color: white;
+    text-decoration: none;
+}
+
+.breadcrumb {
+    background: white;
+    padding: 10px 20px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* --- DATA TABLE SECTION --- */
+.content-wrapper {
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 4px;
+    border-top: 3px solid var(--secondary-blue);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+.alert-container {
+    margin-bottom: 20px;
+    animation: fadeInDown 0.5s ease; /* Efek muncul dari atas */
+}
+
+.alert {
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 5px solid;
+}
+
+tr, td, a{
+    text-decoration: none;
+}
+
+/* Warna Hijau untuk Hapus (Sukses) */
+.alert-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border-color: #d6e9c6;
+    border-left-color: #2ecc71;
+}
+
+/* Warna Biru untuk Edit (Info) */
+.alert-info {
+    background-color: #d9edf7;
+    color: #31708f;
+    border-color: #bce8f1;
+    border-left-color: #3498db;
+}
+
+/* Animasi sederhana */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.card-header a{
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.btn-tambah {
+    background-color: #5bc0de;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-kembali {
+    background-color: #f3f4f7;
+    border: 1px solid #dcdfe6;
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: #606266;
+    cursor: pointer;
+    font-size: 12px;
+    transition: 0.2s;
+    align-items: center;
+}
+
+
+.btn-kembali:hover {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.kategori-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    float: right;
+    margin-bottom: 10px;
+}
+
+.kategori-box input {
+    border: 1px solid var(--border-color);
+    padding: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+table th, table td {
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    text-align: left;
+}
+
+table th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+}
+
+.status-kembali{
+    color: green;
+    font-weight: bold;
+}
+
+.status-pinjam{
+    color: red;
+    font-weight: bold;
+}
+
+.btn-action {
+    padding: 5px 8px;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-edit { background-color: #f0ad4e; }
+.btn-delete { background-color: #d9534f; }
+
+.table-footer {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--gray-text);
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li .page-link {
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #3498db; /* Biru akademik */
+    border: 1px solid #dee2e6;
+    display: block; /* Penting: agar seluruh area kotak bisa diklik */
+}
+
+.pagination li.active .page-link {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.pagination li.disabled .page-link {
+    color: #ccc;
+    pointer-events: none; /* Mematikan klik jika di halaman 1 */
+    background-color: #f8f9fa;
+}
+
+.pagination li:first-child .page-link {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.pagination li:last-child .page-link {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}

@@ -11,7 +11,7 @@
         $_SESSION['admin'] = true;
         $_SESSION['username'] = $username;
 
-        header("Location: admin/dashboard.php");
+        header("Location: Admin/dashboard.php");
     } else {
         header("Location: login.php?error=1");
     }

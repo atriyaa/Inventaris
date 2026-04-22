@@ -413,7 +413,7 @@ LEFT JOIN peminjaman ON barang.id = peminjaman.barang_id AND peminjaman.status='
                         <input type="text" name="keperluan" required>
                     </div>
                     <div class="form-actions">
-                        <a href="dashboard.php" class="btn-batal">
+                        <a href="Admin/dashboard.php" class="btn-batal">
                             <i class="fa fa-arrow-left"></i> Kembali
                         </a>
                         <button name="pinjam"  type="submit" class="btn-simpan">
