@@ -340,23 +340,7 @@ LEFT JOIN peminjaman ON barang.id = peminjaman.barang_id AND peminjaman.status='
     </head>
 <body class="body">
     <?php $page = basename($_SERVER['PHP_SELF']); ?>
-    <aside>
-        <div class="user-panel">
-            <img src="image/rooney.jpg" alt="User">
-            <div>
-                <p style="color: white; font-weight: 600;">Ahmad Jhony</p>
-                <small style="color: #2ecc71;"><i class="fa fa-circle"></i> Online</small>
-            </div>
-        </div>
-        
-        <ul class="sidebar-menu">
-            <li class="menu-header">MAIN NAVIGATION</li>
-            <li class=""><a href="Admin/dashboard.php"><span> &nbsp; DASHBOARD</span></a></li>
-            <li class="active"><a href="Admin/pinjam.php"><span> &nbsp; PINJAM BARANG</span></a></li>
-            <li class=""><a href="Admin/peminjaman.php"><span> &nbsp; PEMINJAMAN AKTIF</span></a></li>
-            <li class=""><a href="history_peminjaman.php"><span> &nbsp; HISTORY PEMINJAMAN</span></a></li>
-        </ul>
-    </aside>
+    <?php include "../include/sidebar.php" ?>
     <main>
         <header>
             <i class="fa fa-bars" id="toggle-btn"></i>

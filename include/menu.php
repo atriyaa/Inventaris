@@ -1,4 +1,3 @@
-
 <aside id="aside"  class="w-64 bg-[#222d32] transition-all duration-300 transform shadow-lg flex-shrink-0">
     <div class="p-4 bg-[#367fa9] text-white font-bold text-xl flex items-center justify-center">
         Inventaris<span class="font-light">App</span>

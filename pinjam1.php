@@ -1,27 +1,26 @@
 <?php
-    require_once __DIR__ . "/../config/database.php";
+    require_once __DIR__ . "/config/database.php";
     session_start();
-    $sql_nama_barang = mysqli_query($conn, "SELECT id,nama_barang FROM barang");
-    if (!$sql_nama_barang) {
-        die("Query kategori error: " . mysqli_error($conn));
-    }
     $create_message = "";
-    $message_type = "";
 
-    if (isset($_POST["tambah_data"])) {
-    $nama_barang = $_POST["nama_barang"];
-    $tanggal_perbaikan = $_POST["tanggal_perbaikan"];
-    $deskripsi = $_POST["deskripsi"];
+    if (isset($_POST["pinjam"])) {
+    $nama_peminjam = $_POST['nama_peminjam'];
+    $keperluan = $_POST['keperluan'];
+    $jumlah = $_POST['jumlah'];
+    $barang_id = $_POST['barang_id'];
 
-    $sql = "INSERT INTO perawatan(tanggal_perbaikan, deskripsi, id) VALUES ('$tanggal_perbaikan', '$deskripsi', '$nama_barang')";
+    $sql =  "INSERT INTO peminjaman (nama_peminjam, keperluan, jumlah, barang_id) VALUES ('$nama_peminjam', '$keperluan', '$jumlah', '$barang_id')";
     if (mysqli_query($conn, $sql)) {
-        header("Location: perawatan.php?create=success");
+        header("Location:peminjaman_barang.php?pinjam=success");
         exit;
     } else {
         $create_message = "Data gagal ditambahkan";
         $message_type = "error";
+        }
     }
-    }
+    $query = mysqli_query($conn, "SELECT barang.*, IFNULL(SUM(peminjaman.jumlah),0) AS sedang_dipinjam FROM barang
+    LEFT JOIN peminjaman ON barang.id = peminjaman.barang_id AND peminjaman.status='dipinjam' GROUP BY barang.id
+    ");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +28,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>silahkan Tambah Data Inventaris</title>
-    <link rel="stylesheet" href="../assets/style2.css">
+    <link rel="stylesheet" href="../assets/style.css">
     <style>
         body{
             background-color: #f4f7fa;
@@ -231,43 +230,56 @@
             from { transform: scale(0.7); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
-        
         </style>
 </head>
 <body>
     <div class="content-wrapper">
         <div class="header-section">
             <p>Selamat Datang, <?php echo $_SESSION["username"]; ?></p>
-            <h3><i class="fa fa-plus-circle">Tambah Data Perawatan</i></h3>
-            <p><a href="dashboard.php">Dashboard</a> <a href="form_perawatan.php"> > Tambah Data Perawatan</a></p>
+            <h3><i class="fa fa-plus-circle"></i> Tambah Data Barang</h3>
+            <p><a href="dashboard.php">Dashboard</a> <a href="create.php"> > Tambah Barang</a></p>
         </div>
         <div class="card-form">
+            <?php if (isset($_GET['create']) && $_GET['create'] == 'success'): ?>
+            <div class="alert alert-success alert-dismissible fade show notif-fix text-center">
+            Data berhasil ditambahkan!
+            </div>
+            <?php endif; ?>
             <form autocomplete="off"  method="POST">
                 <div class="form-grid">
                     <div class="input-group">
-                        <label for="nama_barang">Nama Barang</label>
-                        <div class="select-wrapper">
-                            <select name="nama_barang">
-                                <option value="">- - Pilih Barang - -</option>
-                                <?php while ($k = mysqli_fetch_assoc($sql_nama_barang)) {
-                                    echo "<option value='".$k['id']."'>".$k['nama_barang']."</option>";
-                                    }?>
-                            </select>
-                        </div>
+                        <label for="pilih barang">Pilih Barang</label>
+                        <select  id="barangSelect" name="barang_id" required>
+                            <option value="">-- Pilih Barang --</option>
+                            <?php while($row = mysqli_fetch_assoc($query)) { 
+                                $stok_tersedia = $row['jumlah'] - $row['sedang_dipinjam']; 
+                            ?>
+                            <option value="<?php echo $row['id']; ?>"
+                            data-nama="<?php echo $row['nama_barang']; ?>"
+                            data-stok="<?php echo $stok_tersedia; ?>"
+                            data-dipinjam="<?php echo $row['sedang_dipinjam']; ?>">
+                            <?php echo $row['nama_barang']; ?>
+                            </option>
+                            <?php } ?>
+                        </select>
                     </div>
                     <div class="input-group">
-                        <label for="Tanggal_perbaikan">Tanggal</label>
-                        <input type="date" name="tanggal_perbaikan" required>
+                        <label for="jumlah">Jumlah</label>
+                        <input type="number" name="jumlah" required>
                     </div>
-                    <div class="input-group full-width">
-                        <label for="deskripsi">Deskripsi</label>
-                        <textarea name="deskripsi" placeholder="Masukkan deskripsi perawatan..."></textarea>
+                    <div class="input-group">
+                        <label for="nama_peminjam">Nama Peminjam</label>
+                        <input type="text" name="nama_peminjam" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="keperluan">Keperluan</label>
+                        <input type="text" name="keperluan" required>
                     </div>
                     <div class="form-actions">
-                        <a href="perawatan.php" class="btn-batal">
+                        <a href="./Admin/inventaris.php" class="btn-batal">
                             <i class="fa fa-arrow-left"></i> Kembali
                         </a>
-                        <button type="submit" name='tambah_data' class="btn-simpan">
+                        <button type="submit" class="btn-simpan" name="pinjam">
                             <i class="fa fa-save"></i> Simpan Data
                         </button>
                     </div>
@@ -275,6 +287,7 @@
             </form>
         </div>
     </div>
+
     <script>
     function bukaModal() { document.getElementById("modalKategori").style.display = "block"; }
     function tutupModal() { document.getElementById("modalKategori").style.display = "none"; }
