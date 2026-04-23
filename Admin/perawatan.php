@@ -111,7 +111,7 @@ $query = mysqli_query($conn,"
                         <tr>
                             <td><?= $no++; ?></td>
                             <td><?= $row['nama_barang']; ?></td>
-                            <td><?= $row['tanggal_perbaikan']; ?></td>
+                            <td><?= date("d F Y", strtotime($row['tanggal_perbaikan'])); ?></td>
                             <td><?= $row['deskripsi']; ?></td>
                             <?php } ?>
                         </tr>
