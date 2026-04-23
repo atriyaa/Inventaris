@@ -21,81 +21,6 @@ body {
     background-color: #f4f6f9;
 }
 
-/* --- SIDEBAR --- */
-aside {
-    width: 250px;
-    background-color: var(--sidebar-dark);
-    color: #b8c7ce;
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 1001; /* Di atas segalanya */
-    overflow-y: auto; /* Agar menu bisa di-scroll jika kepanjangan */
-    transition: width 0.3s ease;
-}
-
-.user-panel {
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #374850;
-}
-
-.user-panel img {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    margin-right: 10px;
-    margin-left: 10px;
-    border: 2px solid var(--secondary-blue);
-}
-
-/* Class tambahan untuk efek toggle */
-#toggle-btn {
-    font-size: 20px;
-    transition: transform 0.3s;
-    cursor: pointer;
-}
-
-#toggle-btn:hover {
-    transform: scale(1.1); /* Efek membesar sedikit saat disentuh mouse */
-}
-
-aside.collapsed {
-    width: 70px; /* Lebar sidebar saat tertutup */
-}
-
-aside.collapsed + main {
-    margin-left: 70px;
-}
-
-aside.collapsed + main header {
-    left: 70px;
-}
-
-aside.collapsed .user-panel div, 
-aside.collapsed .sidebar-menu li span,
-aside.collapsed .menu-header {
-    display: none; /* Sembunyikan teks saat tertutup */
-}
-
-aside.collapsed .sidebar-menu li {
-    text-align: center;
-    padding: 15px 0;
-}
-
-aside.collapsed .sidebar-menu li i {
-    margin: 0;
-    font-size: 18px;
-}
-
-/* Transisi halus */
-aside, main {
-    transition: all 0.5s ease;
-}
 
 .sidebar-menu {
     list-style: none;
@@ -321,20 +246,6 @@ table th {
 
 .btn-edit { background-color: #f0ad4e; }
 .btn-delete { background-color: #d9534f; }
-
-.table-footer {
-    margin-top: 15px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    color: var(--gray-text);
-}
-
-.pagination {
-    display: flex;
-    list-style: none;
-    padding: 0;
-}
 
 .pagination li .page-link {
     padding: 8px 16px;

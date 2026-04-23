@@ -1,10 +1,6 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
     session_start();
-    // if (!isset($_SESSION['admin'])) {
-    //     header("Location: ../login.php");
-    //     exit;
-    // }
     $lab = $_GET['lab'] ?? null;
     $filter = $_GET['filter'] ?? 'all';
     $filter = mysqli_real_escape_string($conn, $filter);
@@ -54,7 +50,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventaris Laboratorium Informatika</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/style2.css">
 </head>
@@ -134,7 +130,7 @@
                         while ($row = mysqli_fetch_assoc($result)) {
                         ?>
                     <tbody>
-                        <tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
                             <td><?= $no++; ?></td>
                             <td><?= $row['kode_inventaris']; ?></td>
                             <td><?= $row['nama_barang']; ?></td>
@@ -156,24 +152,6 @@
                     </tbody>
                 </table>
 
-                <div class="table-footer">
-                    <p>Showing <?= ($offset + 1); ?> to <?= min($offset + $limit, $total_data); ?> of <?= $total_data; ?> entries</p>
-                    <ul class="pagination">
-                        <?php if($halaman_aktif > 1): ?>
-                            <li><a href="?halaman=<?= $halaman_aktif - 1; ?>&lab=<?= $lab; ?>&filter=<?= $filter; ?>">Previous</a></li>
-                        <?php else: ?>
-                            <li class="disabled">Previous</li>
-                        <?php endif; ?>
-
-                        <li class="active"><?= $halaman_aktif; ?></li>
-
-                        <?php if($halaman_aktif < $total_halaman): ?>
-                            <li><a href="?halaman=<?= $halaman_aktif + 1; ?>&lab=<?= $lab; ?>&filter=<?= $filter; ?>">Next</a></li>
-                        <?php else: ?>
-                            <li class="disabled">Next</li>
-                        <?php endif; ?>
-                    </ul>
-                </div>
             </div>
         </div>
     </main>
