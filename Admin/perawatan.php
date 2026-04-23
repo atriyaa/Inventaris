@@ -2,7 +2,7 @@
     require_once __DIR__ . "/../config/database.php";
     session_start();
 
-    $limit = 15;
+    $limit = 1;
     $halaman_aktif = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
     if ($halaman_aktif <= 0) $halaman_aktif = 1;
     $offset = ($halaman_aktif - 1) * $limit;
@@ -44,7 +44,8 @@ $where_sql = "WHERE peminjaman.status = 'dikembalikan'";
 $query = mysqli_query($conn,"
     SELECT tanggal_perbaikan, deskripsi, nama_barang
     FROM perawatan
-    inner join barang on perawatan.id = barang.id
+    inner join barang on perawatan.id = barang.id ORDER BY tanggal_perbaikan DESC
+    LIMIT $limit OFFSET $offset
 ");
 ?>
 <!DOCTYPE html>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['admin'])) {
-    header("Location: ../login.php");
+    header("Location:peminjaman_barang.php");
     exit;
 }
 
@@ -28,5 +28,5 @@ mysqli_query($conn, "
     WHERE id = {$p['barang_id']}
 ");
 
-header("Location: peminjaman.php?return=success");
+header("Location: peminjaman_barang.php?return=success");
 ?>

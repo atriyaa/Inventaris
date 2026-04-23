@@ -89,6 +89,7 @@ $query = mysqli_query($conn,"
                 <?php endif; ?>
                     <div class="card-header">
                     <h3 style="font-size: 16px;">Barang</h3>
+                    <div class="btn-tambah"><a href="../pinjam1.php">+ pinjam barang</a></div>
                 </div>
                 <table>
                     <thead>
@@ -100,6 +101,7 @@ $query = mysqli_query($conn,"
                             <th>Keperluan</th>
                             <th>Tanggal Pinjam</th>
                             <th>Tanggal Kembali</th>
+                            <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -126,6 +128,15 @@ $query = mysqli_query($conn,"
                                     echo "<span class='status-pinjam'>Dipinjam</span>";
                                 }
                                 ?>
+                            </td>
+                            <td>
+                                <?php if ($row['status'] == 'dipinjam'): ?>
+                                    <a href="kembalikan.php?id=<?= $row['id']; ?>" 
+                                    class="btn-kembali"
+                                    onclick="return confirm('Yakin ingin mengembalikan?')">
+                                        Kembalikan
+                                    </a>
+                                <?php endif; ?>
                             </td>
                             <?php } ?>
                         </tr>

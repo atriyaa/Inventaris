@@ -244,11 +244,14 @@ tr, td, a{
 .btn-tambah {
     background-color: #5bc0de;
     color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 10px;
     font-size: 14px;
+    border-color: none;
+    cursor: pointer;
+}
+.btn-tambah:hover {
+    background-color: #3498db;
 }
 
 .btn-kembali {
@@ -271,11 +274,25 @@ tr, td, a{
 }
 
 .kategori-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    float: right;
-    margin-bottom: 10px;
+    display: inline-block;
+    background: var(--border-color);
+    padding: 10px 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* styling select */
+.kategori-box select {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* biar lebih rapi */
+.kategori-box select option {
+    padding: 10px;
 }
 
 .kategori-box input {
