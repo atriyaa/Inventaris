@@ -120,7 +120,17 @@ $query = mysqli_query($conn,"
                                     </td>
                                     <td class="p-3"><?= $row['keperluan']; ?></td>
                                     <td class="p-3"><?= date("d M Y, H:i",strtotime($row['tanggal_pinjam'])); ?></td>
-                                    <td class="p-3"><?= $row['status']; ?></td>
+                                    <td class="px-6 py-4">
+                                        <?php if ($row['status'] == 'dikembalikan'): ?>
+                                            <span class="px-3 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full border border-green-200">
+                                                <i class="fas fa-clock mr-1"></i> Dikembalikan
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="px-3 py-1 text-xs font-medium bg-red-100 text-red-700 rounded-full border border-red-200">
+                                                <i class="fas fa-check-circle mr-1"></i> Dipinjam
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td>
                                         <a class="btn-kembali"  href="kembalikan.php?id=<?= $row['id']; ?>">
                                             Kembalikan

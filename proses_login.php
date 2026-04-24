@@ -11,7 +11,7 @@
         $_SESSION['admin'] = true;
         $_SESSION['username'] = $username;
 
-        header("Location: Admin/dashboard.php");
+        header("Location: Admin/dashboard_baru.php");
     } else {
         header("Location: login.php?error=1");
     }

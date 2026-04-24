@@ -224,106 +224,121 @@
         }
     </style>
 </head>
-<body>
-    <div class="content-wrapper">
-        <div class="form-container">
-        <div class="header-section">
-            <p>Selamat Datang, <?php echo $_SESSION["username"]; ?></p>
-            <h3><i class="fa fa-plus-circle"></i> Edit Barang</h3>
-            <p><a href="dashboard.php">Dashboard</a> <a href="edit.php"> > Edit Barang</a></p>
-        </div>
-        <div class="card-form">
-            <?php if (isset($_GET['create']) && $_GET['create'] == 'success'): ?>
-            <div class="alert alert-success alert-dismissible fade show notif-fix text-center">
-            Data berhasil diperbarui!
-            </div>
-            <?php endif; ?>
-            <form method="POST">
-                <div class="form-grid">
-                    <div class="input-group">
-                        <Label>Kode Inventaris</Label>
-                        <input type="text" name="kode_inventaris" value="<?=  $data['kode_inventaris']; ?>"required>
-                    </div> 
-        
-                    <div class="input-group">
-                        <Label>Nama Barang</Label>
-                        <input type="text" name="nama_barang" value="<?=  $data['nama_barang']; ?>"required>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <?php include '../include/menu.php'; ?>
+        <div class="flex-1 flex-col overflow-y-auto">
+            <?php include '../include/header_hlm.php'; ?>
+            <div class="p-6">
+                <div class="mb-4">
+                    <p class="text-sm text-gray-500 mb-1">Selamat Datang, <span class="font-semibold"><?php echo htmlspecialchars($_SESSION["username"]); ?></span></p>
+                    <h1 class="text-2xl font-semibold text-gray-800">Edit Data Barang</h1>
+                    <nav class="text-sm text-gray-500 mt-1">
+                        <a href="dashboard.php" class="hover:text-[#3c8dbc]">Dashboard</a> 
+                        <span class="mx-1">></span> 
+                        <span class="text-gray-400">Edit Barang</span>
+                    </nav>
+                </div>
+
+                <?php if (isset($_GET['create']) && $_GET['create'] == 'success'): ?>
+                <div class="mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 shadow-sm flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span>Data berhasil diperbarui!</span>
+                </div>
+                <?php endif; ?>
+
+                <div class="bg-white rounded shadow-md border-t-4 border-[#3c8dbc]">
+                    <div class="px-6 py-4 border-b border-gray-100 flex items-center">
+                        <i class="fas fa-edit text-[#3c8dbc] mr-2"></i>
+                        <h3 class="font-bold text-gray-700 uppercase tracking-wider text-sm">Formulir Pembaruan Inventaris</h3>
                     </div>
 
-                    <div class="input-group">
-                        <label>Merk</label>
-                        <input type="text" name="merk" value="<?=  $data['merk']; ?>">
-                    </div>
-        
-                    <div class="input-group">
-                        <label>Tipe</label>
-                        <input type="text" name="tipe" value="<?=  $data['tipe']; ?>">
-                    </div>
-        
-                    <div class="input-group full-width">
-                        <label>Spesifikasi</label>
-                        <input type="text" name="spesifikasi" value="<?=  $data['spesifikasi']; ?>">
-                    </div>
-        
-                    <div class="input-group">
-                        <label>Jumlah</label>
-                        <input type="number" name="jumlah" value="<?=  $data['jumlah']; ?>"required>
-                    </div>
-        
-                    <div class="input-group">
-                        <label>Kondisi</label>
-                        <select name="kondisi">
-                            <option value="Baik"
-                                <?= $data['kondisi'] == 'Baik' ? 'selected' : ''; ?>>
-                                Baik
-                            </option>
-                            <option value="Cukup"
-                                <?= $data['kondisi'] == 'Cukup' ? 'selected' : ''; ?>>
-                                Cukup
-                            </option>
-                            <option value="Rusak"
-                                <?= $data['kondisi'] == 'Rusak' ? 'selected' : ''; ?>>
-                                Rusak
-                            </option>
-                        </select>
-                    </div>
-        
-                    <div class="input-group">
-                        <label>Lokasi</label>
-                        <input type="text" name="lokasi" value="<?=  $data['lokasi']; ?>">
-                    </div>
-        
-                    <div class="input-group">
-                        <label>Tahun Perolehan</label>
-                        <input type="text" name="tahun_perolehan" value="<?=  $data['tahun_perolehan']; ?>">
-                    </div>
-        
-                    <div class="input-group full-width">
-                        <label>Keterangan</label>
-                        <input type="text" name="keterangan" value="<?= $data['keterangan']; ?>">
-                    </div>
-        
-                    <div class="input-group">
-                        <label for="">Tersedia</label>
-                        <select name="tersedia">
-                            <option value="1" <?=  ($data['tersedia'] == 1) ? 'selected' : '';?>">Iya</option>
-                            <option value="0" <?=  ($data['tersedia'] == 0) ? 'selected' : '';?>">Tidak</option> 
-                        </select>
-                    </div>
-        
-                    <div class="form-actions">
-                        <button type="submit" class="btn-simpan">
-                            <i class="fa fa-save"></i> Simpan Perubahan
-                        </a>
-                    </div>
-                    <div class="form-actions">
-                        <a href="dashboard.php" class="btn-batal">
-                            <i class="fa fa-arrow-left"></i> Kembali
-                        </a>
-                    </div>
+                    <form method="POST" autocomplete="off" class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Kode Inventaris</label>
+                                <input type="text" name="kode_inventaris" value="<?= $data['kode_inventaris']; ?>" required
+                                    class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Nama Barang</label>
+                                <input type="text" name="nama_barang" value="<?= $data['nama_barang']; ?>" required
+                                    class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Merk</label>
+                                <input type="text" name="merk" value="<?= $data['merk']; ?>"
+                                    class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Tipe</label>
+                                <input type="text" name="tipe" value="<?= $data['tipe']; ?>"
+                                    class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Jumlah</label>
+                                <input type="number" name="jumlah" value="<?= $data['jumlah']; ?>" required
+                                    class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Kondisi</label>
+                                <select name="kondisi" class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                                    <option value="Baik" <?= $data['kondisi'] == 'Baik' ? 'selected' : ''; ?>>Baik</option>
+                                    <option value="Cukup" <?= $data['kondisi'] == 'Cukup' ? 'selected' : ''; ?>>Cukup</option>
+                                    <option value="Rusak" <?= $data['kondisi'] == 'Rusak' ? 'selected' : ''; ?>>Rusak</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Lokasi</label>
+                                <input type="text" name="lokasi" value="<?= $data['lokasi']; ?>"
+                                    class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Tahun Perolehan</label>
+                                <input type="text" name="tahun_perolehan" value="<?= $data['tahun_perolehan']; ?>"
+                                    class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Tersedia</label>
+                                <select name="tersedia" class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                                    <option value="1" <?= ($data['tersedia'] == 1) ? 'selected' : ''; ?>>Iya</option>
+                                    <option value="0" <?= ($data['tersedia'] == 0) ? 'selected' : ''; ?>>Tidak</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Spesifikasi</label>
+                                <textarea name="spesifikasi" rows="2" class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20"><?= $data['spesifikasi']; ?></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Keterangan</label>
+                                <textarea name="keterangan" rows="2" class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20"><?= $data['keterangan']; ?></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-end gap-3">
+                            <a href="dashboard.php" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm font-semibold transition flex items-center">
+                                <i class="fas fa-arrow-left mr-2"></i> Batal
+                            </a>
+                            <button type="submit" class="px-4 py-2 bg-[#3c8dbc] hover:bg-[#367fa9] text-white rounded text-sm font-semibold shadow-sm transition flex items-center">
+                                <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
+            </div>
         </div>
     </div>
 </body>

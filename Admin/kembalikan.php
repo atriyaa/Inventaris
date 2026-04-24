@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['admin'])) {
-    header("Location:peminjaman_barang.php");
+    header("Location:peminjaman.php");
     exit;
 }
 
@@ -23,10 +23,10 @@ mysqli_query($conn, "
 ");
 
 // kembalikan stok
-mysqli_query($conn, "
-    UPDATE barang SET jumlah = jumlah + {$p['jumlah']}
-    WHERE id = {$p['barang_id']}
-");
+// mysqli_query($conn, "
+//     UPDATE barang SET jumlah = jumlah + {$p['jumlah']}
+//     WHERE id = {$p['barang_id']}
+// ");
 
-header("Location: peminjaman_barang.php?return=success");
+header("Location: peminjaman.php?return=success");
 ?>
