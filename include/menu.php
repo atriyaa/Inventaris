@@ -15,16 +15,16 @@
 
     <nav class="mt-4 text-sm">
         <div class="px-4 py-2 text-gray-500 uppercase text-xs font-bold">Main Navigation</div>
-        <a href="perawatan.php" 
+        <a href="../Admin/dashboard_baru.php" 
             class="flex items-center px-4 py-3 
-            <?= basename($_SERVER['PHP_SELF']) == 'dashboard.php' 
+            <?= basename($_SERVER['PHP_SELF']) == 'dashboard_baru.php' 
                 ? 'bg-[#1e282c] border-l-4 border-blue-500 text-white' 
                 : 'text-gray-300 hover:bg-[#1e282c]' ?>">
             
                 <i class="fas fa-tachometer-alt w-6"></i>
                 <span>&nbsp; DASHBOARD</span>
         </a>
-        <a href="perawatan.php" 
+        <a href="../Admin/inventaris.php" 
             class="flex items-center px-4 py-3 
             <?= basename($_SERVER['PHP_SELF']) == 'inventaris.php' 
                 ? 'bg-[#1e282c] border-l-4 border-blue-500 text-white' 
@@ -33,7 +33,7 @@
                 <i class="fas fa-tachometer-alt w-6"></i>
                 <span>&nbsp; INVENTARIS</span>
         </a>
-        <a href="perawatan.php" 
+        <a href="../Admin/peminjaman.php" 
             class="flex items-center px-4 py-3 
             <?= basename($_SERVER['PHP_SELF']) == 'peminjaman.php' 
                 ? 'bg-[#1e282c] border-l-4 border-blue-500 text-white' 
@@ -42,7 +42,7 @@
                 <i class="fas fa-tachometer-alt w-6"></i>
                 <span>&nbsp; PEMINJAMAN BARANG</span>
         </a>
-        <a href="perawatan.php" 
+        <a href="../Admin/perawatan.php" 
             class="flex items-center px-4 py-3 
             <?= basename($_SERVER['PHP_SELF']) == 'perawatan.php' 
                 ? 'bg-[#1e282c] border-l-4 border-blue-500 text-white' 
@@ -51,7 +51,7 @@
                 <i class="fas fa-tachometer-alt w-6"></i>
                 <span>&nbsp; PERAWATAN</span>
         </a>
-        <a href="perawatan.php" 
+        <a href="../Admin/kerusakan.php" 
             class="flex items-center px-4 py-3 
             <?= basename($_SERVER['PHP_SELF']) == 'kerusakan.php' 
                 ? 'bg-[#1e282c] border-l-4 border-blue-500 text-white' 
@@ -60,7 +60,7 @@
                 <i class="fas fa-tachometer-alt w-6"></i>
                 <span>&nbsp; KERUSAKAN</span>
         </a>
-        <a href="perawatan.php" 
+        <a href="../Admin/license.php" 
             class="flex items-center px-4 py-3 
             <?= basename($_SERVER['PHP_SELF']) == 'license.php' 
                 ? 'bg-[#1e282c] border-l-4 border-blue-500 text-white' 

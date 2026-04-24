@@ -33,15 +33,37 @@
     $total_data = $row_total['total'];
     $total_halaman = ceil($total_data / $limit);
 
-    $query = "
-        SELECT barang.*, kategori.nama_kategori
-        FROM barang
-        JOIN kategori ON barang.kategori_id = kategori.id
-        $where_sql 
-        ORDER BY barang.id DESC
-        LIMIT $limit OFFSET $offset
-    ";
-    $result = mysqli_query($conn, $query);
+    $count_barang = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jumlah) as total from barang"))['total'];
+    $count_kategori = mysqli_num_rows(mysqli_query($conn, "SELECT id as total from kategori"));
+    $count_kategori_1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='alat_komputer';"))['total_barang'];
+    $count_kategori_2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='furniture';"))['total_barang'];
+    $count_kategori_3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='perangkat_audio';"))['total_barang'];
+    $count_kategori_4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='elektronik';"))['total_barang'];
+    $count_kategori_5 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='pendingin';"))['total_barang'];
+    $count_peminjaman_aktif = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jml_brng_pinjam) as total_barang FROM peminjaman WHERE status='dipinjam'"))['total_barang'];
+    $count_pengembalian = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jml_brng_pinjam) as total_barang FROM peminjaman WHERE status='dikembalikan'"))['total_barang'];
+    $count_history_peminjaman = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jml_brng_pinjam) as total_barang FROM peminjaman"))['total_barang'];
+    $count_perawatan = mysqli_num_rows(mysqli_query($conn, "SELECT id as total_barang FROM perawatan"));
+    $count_kerusakan = mysqli_num_rows(mysqli_query($conn, "SELECT id_kerusakan as total_barang FROM kerusakan"));
+    $count_license = mysqli_num_rows(mysqli_query($conn, "SELECT id_license as total_barang FROM license_software"));
+    $count_user = mysqli_num_rows(mysqli_query($conn, "SELECT id as total_user FROM admin"));
+
+$cards = [
+    ['judul' => 'Data Barang', 'jumlah' => $count_barang, 'icon' => 'fa-box', 'bg' => 'bg-green-500', 'link' => 'inventaris.php'],
+    ['judul' => 'Pengguna', 'jumlah' => $count_user, 'icon' => 'fa-users', 'bg' => 'bg-yellow-500', 'link' => 'dashboard_baru.php'],
+    ['judul' => 'Software License', 'jumlah' => $count_license, 'icon' => 'fa-key', 'bg' => 'bg-purple-600', 'link' => 'license.php'],
+    ['judul' => 'Kategori Utama', 'jumlah' => $count_kategori, 'icon' => 'fa-tags', 'bg' => 'bg-blue-500', 'link' => 'kategori.php'],
+    ['judul' => 'Kategori Alat Komputer', 'jumlah' => $count_kategori_1, 'icon' => 'fa-folder', 'bg' => 'bg-teal-500', 'link' => 'kategori.php'],
+    ['judul' => 'Kategori Furniture', 'jumlah' => $count_kategori_2, 'icon' => 'fa-folder-open', 'bg' => 'bg-cyan-500', 'link' => 'kategori.php'],
+    ['judul' => 'Kategori Perangkat Audio', 'jumlah' => $count_kategori_3, 'icon' => 'fa-file-alt', 'bg' => 'bg-sky-500', 'link' => 'kategori.php'],
+    ['judul' => 'Kategori Elektronik', 'jumlah' => $count_kategori_4, 'icon' => 'fa-archive', 'bg' => 'bg-blue-600', 'link' => 'kategori.php'],
+    ['judul' => 'Kategori Pendingin', 'jumlah' => $count_kategori_5, 'icon' => 'fa-layer-group', 'bg' => 'bg-indigo-600', 'link' => 'kategori.php'],
+    ['judul' => 'Peminjaman Aktif', 'jumlah' => $count_peminjaman_aktif, 'icon' => 'fa-exchange-alt', 'bg' => 'bg-blue-400', 'link' => 'peminjaman.php'],
+    ['judul' => 'Pengembalian', 'jumlah' => $count_pengembalian, 'icon' => 'fa-check-circle', 'bg' => 'bg-emerald-500', 'link' => 'peminjaman.php'],
+    ['judul' => 'History Pinjam', 'jumlah' => $count_history_peminjaman, 'icon' => 'fa-history', 'bg' => 'bg-slate-500', 'link' => 'peminjaman.php'],
+    ['judul' => 'Barang Rusak', 'jumlah' => $count_kerusakan, 'icon' => 'fa-exclamation-triangle', 'bg' => 'bg-red-500', 'link' => 'kerusakan.php'],
+    ['judul' => 'Dalam Perawatan', 'jumlah' => $count_perawatan, 'icon' => 'fa-wrench', 'bg' => 'bg-orange-500', 'link' => 'perawatan.php'],
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,7 +90,6 @@
         
         <div class="flex-1 flex flex-col overflow-y-auto">
             <?php include '../include/header_hlm.php'; ?>
-
             <main class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h1 class="text-2xl font-light">Dashboard <span class="text-sm text-gray-500">Control panel</span></h1>
@@ -76,114 +97,22 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div class="bg-green-500 text-white rounded shadow flex flex-col">
-                        <div class="p-4 flex justify-between items-start">
-                            <div>
-                                <h3 class="text-3xl font-bold">4</h3>
-                                <p class="text-sm">Model Barang</p>
+                    <?php foreach ($cards as $card) : ?>
+                    <div class="<?= $card['bg']; ?> text-white rounded shadow-md flex flex-col transition-transform hover:scale-[1.02] duration-200">
+                        <div class="p-4 flex justify-between items-fastart relative overflow-hidden">
+                            <div class="z-10">
+                                <h3 class="text-3xl font-bold"><?= $card['jumlah']; ?></h3>
+                                <p class="text-sm font-medium opacity-90"><?= $card['judul']; ?></p>
                             </div>
-                            <i class="fas fa-chart-bar text-4xl opacity-20"></i>
-                        </div>
-                        <a href="#" class="bg-black/10 py-1 text-center text-xs hover:bg-black/20">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                    <div class="bg-yellow-500 text-white rounded shadow flex flex-col">
-                        <div class="p-4 flex justify-between items-start">
-                            <div>
-                                <h3 class="text-3xl font-bold">3</h3>
-                                <p class="text-sm">Pengguna</p>
+                            <div class="absolute -right-2 -bottom-2 opacity-20 transition-transform duration-500 group-hover:scale-110">
+                                <i class="fas <?= $card['icon']; ?> text-6xl"></i>
                             </div>
-                            <i class="fas fa-user-plus text-4xl opacity-20"></i>
                         </div>
-                        <a href="#" class="bg-black/10 py-1 text-center text-xs hover:bg-black/20">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="<?= $card['link']; ?>" class="bg-black/10 py-1.5 text-center text-xs font-semibold hover:bg-black/20 transition-colors flex items-center justify-center">
+                            More info <i class="fas fa-arrow-circle-right ml-1"></i>
+                        </a>
                     </div>
-                    <div class="bg-red-500 text-white rounded shadow flex flex-col">
-                        <div class="p-4 flex justify-between items-start">
-                            <div>
-                                <h3 class="text-3xl font-bold">5</h3>
-                                <p class="text-sm">Suplier</p>
-                            </div>
-                            <i class="fas fa-pie-chart text-4xl opacity-20"></i>
-                        </div>
-                        <a href="#" class="bg-black/10 py-1 text-center text-xs hover:bg-black/20">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                    <div class="bg-blue-400 text-white rounded shadow flex flex-col">
-                        <div class="p-4 flex justify-between items-start">
-                            <div>
-                                <h3 class="text-3xl font-bold">2</h3>
-                                <p class="text-sm">Transaksi Peminjaman</p>
-                            </div>
-                            <i class="fas fa-list text-4xl opacity-20"></i>
-                        </div>
-                        <a href="#" class="bg-black/10 py-1 text-center text-xs hover:bg-black/20">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="bg-white border-t-4 border-blue-400 rounded shadow-sm overflow-hidden">
-                    <div class="px-4 py-3 border-b font-semibold text-gray-700">Barang</div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left border-collapse">
-                            <thead>
-                                <tr class="bg-gray-50 border-b text-gray-700">
-                                    <th class="p-3 font-bold uppercase text-xs">No</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Kode Inventaris</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Nama Barang</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Merk</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tipe</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Spesifikasi</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Jumlah</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Kondisi</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Lokasi</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tahun Perolehan</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Keterangan</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tersedia</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                <?php
-                                $no = $offset + 1;
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                ?>
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="p-3 text-center"><?= $no++; ?></td>
-                                    <td class="p-3 font-mono text-blue-600"><?= $row['kode_inventaris']; ?></td>
-                                    <td class="p-3 font-medium"><?= $row['nama_barang']; ?></td>
-                                    <td class="p-3"><?= $row['merk']; ?></td>
-                                    <td class="p-3"><?= $row['tipe']; ?></td>
-                                    <td class="p-3 text-xs text-gray-600"><?= $row['spesifikasi']; ?></td>
-                                    <td class="p-3 text-center">
-                                        <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
-                                            <?= $row['jumlah']; ?>
-                                        </span>
-                                    </td>
-                                    <td class="p-3"><?= $row['kondisi']; ?></td>
-                                    <td class="p-3"><?= $row['lokasi']; ?></td>
-                                    <td class="p-3"><?= $row['tahun_perolehan']; ?></td>
-                                    <td class="p-3"><?= $row['keterangan']; ?></td>
-                                    <td class="p-3"><?= $row['tersedia']; ?></td>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                        <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-                            <p class="text-sm text-gray-700">Showing <span class="font-semibold"><?= ($offset + 1); ?></span> to <span class="font-semibold"><?= min($offset + $limit, $total_data); ?></span> of <span class="font-semibold"> <?= $total_data; ?></span> entries </p>
-                            <ul class="flex items-center -space-x-px shadow-sm rounded-md text-sm font-medium">
-                                <?php if($halaman_aktif > 1): ?>
-                                    <li class="inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 transition"><a href="?halaman=<?= $halaman_aktif - 1; ?>&lab=<?= $lab; ?>&filter=<?= $filter; ?>">Previous</a></li>
-                                <?php else: ?>
-                                    <li class="inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed">Previous</li>
-                                <?php endif; ?>
-
-                                <li class="z-10 bg-blue-600 border-blue-600 text-white inline-flex items-center px-4 py-2 border font-bold"><?= $halaman_aktif; ?></li>
-
-                                <?php if($halaman_aktif < $total_halaman): ?>
-                                    <li class="inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 transition"><a href="?halaman=<?= $halaman_aktif + 1; ?>&lab=<?= $lab; ?>&filter=<?= $filter; ?>">Next</a></li>
-                                <?php else: ?>
-                                    <li class="inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed">Next</li>
-                                <?php endif; ?>
-                            </ul>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </main>
         </div>
