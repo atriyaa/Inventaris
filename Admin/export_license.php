@@ -33,7 +33,7 @@ while($data = mysqli_fetch_assoc($query)){
     <td><?php echo $data['tanggal_expired']; ?></td>
     <td><?php echo $data['jumlah_user']; ?></td>
     <td><?php echo $data['status_aktif']; ?></td>
-</tr>
+</tr> 
 
 <?php } ?>
 

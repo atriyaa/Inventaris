@@ -8,7 +8,7 @@
             <i class="fas fa-user"></i>
         </div>
         <div>
-            <p class="text-sm font-semibold">Maimun</p>
+            <p class="font-semibold text-xl text-white"><?php echo $_SESSION["username"]; ?></p>
             <p class="text-xs text-green-400"><i class="fas fa-circle text-[8px] mr-1"></i> Online</p>
         </div>
     </div>
