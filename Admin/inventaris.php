@@ -72,8 +72,8 @@
 
             <main class="p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-2xl font-light">Dashboard <span class="text-sm text-gray-500">Control panel</span></h1>
-                    <nav class="text-xs text-gray-500"><i class="fas fa-home"></i> Home > Dashboard</nav>
+                    <h1 class="text-2xl font-light">Dashboard </h1>
+                    <nav class="text-xs text-gray-500"><i class="fas fa-home"></i> <a href="../index.php">Home</a> > <a href="dashboard_baru.php">Dashboard</a></nav>
                 </div>
                 <div class="bg-white border-t-4 border-blue-400 rounded shadow-sm overflow-hidden">
                     <div class="px-4 py-3 border-b flex items-center justify-between bg-white w-full">
