@@ -142,5 +142,26 @@ $query = mysqli_query($conn,"
             </main>
         </div>
     </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('toggle-btn');
+        const sidebar = document.querySelector('aside');
+
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+            });
+        }
+
+        // Script Alert
+        const alertBox = document.querySelector('.alert-container');
+        if (alertBox) {
+            setTimeout(() => {
+                alertBox.style.opacity = '0'; // Biar halus
+                setTimeout(() => alertBox.style.display = 'none', 500);
+            }, 3000);
+        }
+    });
+</script>
 </body>
 </html>

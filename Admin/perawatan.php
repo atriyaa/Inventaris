@@ -136,93 +136,6 @@ $query = mysqli_query($conn,"
             </main>
         </div>
     </div>
-</body>
-</html>
-<!-- <body>
-    <?php $page = basename($_SERVER['PHP_SELF']); ?>
-    <aside>
-        <div class="user-panel">
-            <img src="image/rooney.jpg" alt="User">
-            <div>
-                <p style="color: white; font-weight: 600;">Ahmad Jhony</p>
-                <small style="color: #2ecc71;"><i class="fa fa-circle"></i> Online</small>
-            </div>
-        </div>
-        
-        <?php include '../include/menu.php'; ?>
-    </aside>
-
-    <main>
-        <header>
-            <i class="fa fa-bars" id="toggle-btn"></i>
-            <div style="font-size: 14px;">
-                Ahmad Jhony - administrator &nbsp; <i class="fa fa-sign-out"><a href="logout.php" style="color: #000000;"> LOGOUT</a></i> 
-            </div>
-        </header>
-
-        <div class="breadcrumb">
-            <h2 style="font-size: 18px; color: #333;">Perawatan <small style="color: #999; font-weight: 300;">History Data perawatan</small></h2>
-            <div><i class="fa fa-home"></i> <a href="logout.php">Home</a> > <a href="dashboard.php">Dashboard</a></div>
-        </div>
-
-        <div class="content-wrapper">
-            <div class="card">
-                <?php if (isset($_GET['create']) && $_GET['create'] == 'success'): ?>
-                <div id='notif' style="background: green; color: white; padding: 10px;">
-                    Data berhasil ditambahkan!
-                </div>
-                <?php endif; ?>
-                <div class="card-header">
-                    <button class="btn-tambah" ><a href="form_perawatan.php">+ Tambah Perawatan</a></button>
-                    <button class="btn-tambah"> <a href="export_perawatan.php"> > Export Excel</a></button>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Barang</th>
-                            <th>Tanggal Perawatan</th>
-                            <th>Deskripsi</th>
-                        </tr>
-                    </thead>
-                    <?php
-                    if ($query->num_rows> 0) {
-                        $no = $offset + 1;
-                        while ($row = mysqli_fetch_assoc($query)) {
-                    ?>
-                    <tbody>
-                        <tr>
-                            <td><?= $no++; ?></td>
-                            <td><?= $row['nama_barang']; ?></td>
-                            <td><?= date("d F Y", strtotime($row['tanggal_perbaikan'])); ?></td>
-                            <td><?= $row['deskripsi']; ?></td>
-                            <?php } ?>
-                        </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-
-                <div class="table-footer">
-                    <p>Showing <?= ($offset + 1); ?> to <?= min($offset + $limit, $total_data); ?> of <?= $total_data; ?> entries</p>
-                    <ul class="pagination">
-                        <?php if($halaman_aktif > 1): ?>
-                            <li><a href="?halaman=<?= $halaman_aktif - 1; ?>&lab=<?= $lab; ?>&filter=<?= $filter; ?>">Previous</a></li>
-                        <?php else: ?>
-                            <li class="disabled">Previous</li>
-                        <?php endif; ?>
-
-                        <li class="active"><?= $halaman_aktif; ?></li>
-
-                        <?php if($halaman_aktif < $total_halaman): ?>
-                            <li><a href="?halaman=<?= $halaman_aktif + 1; ?>&lab=<?= $lab; ?>&filter=<?= $filter; ?>">Next</a></li>
-                        <?php else: ?>
-                            <li class="disabled">Next</li>
-                        <?php endif; ?>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </main>
 <script>
     const toggleBtn = document.getElementById('toggle-btn');
     const sidebar = document.querySelector('aside');
@@ -244,4 +157,5 @@ $query = mysqli_query($conn,"
         }
     }, 3000); // 3000 ms = 3 detik
 </script>
-</body> -->
+</body>
+</html>
