@@ -95,22 +95,22 @@
                         <table class="w-full text-sm text-left border-collapse">
                             <thead>
                                 <tr class="bg-gray-50 border-b text-gray-700">
-                                    <th class="p-3 font-bold uppercase text-xs">No</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Kode Inventaris</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Nama Barang</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Merk</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tipe</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Spesifikasi</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Jumlah</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Kondisi</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Lokasi</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tahun Perolehan</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Keterangan</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tersedia</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Aksi</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">No</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Kode Inventaris</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Nama Barang</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Merk</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Tipe</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Spesifikasi</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Jumlah</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Kondisi</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Lokasi</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Tahun Perolehan</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Keterangan</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Tersedia</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200">
+                            <tbody class="divide-y divide-gray-200 text-center">
                                 <?php
                                 $no = $offset + 1;
                                 while ($row = mysqli_fetch_assoc($result)) {
@@ -132,6 +132,22 @@
                                     <td class="p-3"><?= $row['tahun_perolehan']; ?></td>
                                     <td class="p-3"><?= $row['keterangan']; ?></td>
                                     <td class="p-3"><?= $row['tersedia']; ?></td>
+                                    <td class="px-4 py-2">
+                                        <div class="flex gap-2">
+                                            <!-- Tombol Edit -->
+                                            <a href="edit.php?id=<?= $row['id']; ?>" 
+                                            class="px-3 py-1 text-sm bg-yellow-400 hover:bg-yellow-500 text-white rounded transition">
+                                                Edit
+                                            </a>
+                                            <!-- Tombol Delete -->
+                                            <a href="delete.php?id=<?= $row['id']; ?>" 
+                                            onclick="return confirm('Yakin ingin menghapus data ini?')"
+                                            class="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded transition">
+                                                Delete
+                                            </a>
+
+                                        </div>
+                                    </td>
                                 </tr>
                                 <?php } ?>
                             </tbody>
