@@ -108,8 +108,7 @@ $query = mysqli_query($conn,"
                                     <td class="p-3 text-center"><?= $no++; ?></td>
                                     <td class="p-3 font-mono text-blue-600"><?= $row['kode_inventaris']; ?></td>
                                     <td class="p-3 font-mono text-blue-600"><?= $row['nama_barang']; ?></td>
-                                    <td class="p-3 font-medium"><?= $row['tanggal_perbaikan']; ?></td>
-                                    <td class="p-3 text-xs text-gray-600"><?= $row['deskripsi']; ?></td>
+                                    <td class="p-3 text-xs text-gray-600"><?= date("d M Y", strtotime($row['deskripsi'])); ?></td>
                                 </tr>
                                 <?php } ?>
                             </tbody>

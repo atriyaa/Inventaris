@@ -110,8 +110,8 @@ $query = mysqli_query($conn,"
                                     <td class="p-3 font-mono text-blue-600"><?= $row['nama_software']; ?></td>
                                     <td class="p-3 font-mono text-blue-600"><?= $row['license_key']; ?></td>
                                     <td class="p-3 font-medium"><?= $row['tipe_license']; ?></td>
-                                    <td class="p-3 text-xs text-gray-600"><?= $row['tanggal_pembelian']; ?></td>
-                                    <td class="p-3 font-mono text-blue-600"><?= $row['tanggal_expired']; ?></td>
+                                    <td class="p-3 text-xs text-gray-600"><?= date("d M Y",strtotime($row['tanggal_pembelian'])); ?></td>
+                                    <td class="p-3 font-mono text-blue-600"><?= date("d M Y",strtotime($row['tanggal_expired'])); ?></td>
                                     <td class="p-3 font-medium"><?= $row['jumlah_user']; ?></td>
                                     <td class="p-3 text-xs text-gray-600"><?= $row['status_aktif']; ?></td>
                                     <td class="p-3 text-xs text-gray-600"><?= $row['keterangan']; ?></td>

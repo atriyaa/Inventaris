@@ -119,7 +119,7 @@ $query = mysqli_query($conn,"
                                         </span>
                                     </td>
                                     <td class="p-3"><?= $row['keperluan']; ?></td>
-                                    <td class="p-3"><?= $row['tanggal_pinjam']; ?></td>
+                                    <td class="p-3"><?= date("d M Y, H:i",strtotime($row['tanggal_pinjam'])); ?></td>
                                     <td class="p-3"><?= $row['status']; ?></td>
                                     <td>
                                         <a class="btn-kembali"  href="kembalikan.php?id=<?= $row['id']; ?>">
