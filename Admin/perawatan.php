@@ -75,7 +75,7 @@ $query = mysqli_query($conn,"
                 <div class="bg-white border-t-4 border-blue-400 rounded shadow-sm overflow-hidden">
                     <div class="px-4 py-3 border-b flex items-center justify-between bg-white w-full">
                         <h3 class="font-semibold text-gray-700 text-lg">Perawatan Barang</h3>
-                        <div class="px-5 py-3 border-b flex items-center justify-end bg-white w-full">
+                        <div class="px-5 py-3 border-b flex items-center justify-end bg-white w-full flex gap-4">
                             <div class="flex-shrink-0">
                                 <a href="form_perawatan.php" class="inline-flex items-center bg-[#3c8dbc] hover:bg-[#367fa9] text-white text-xs font-bold px-3 py-2 rounded shadow-sm transition-all uppercase tracking-wider">
                                     <i class="fas fa-plus mr-2"></i> Tambah Perawatan

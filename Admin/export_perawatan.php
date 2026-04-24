@@ -2,7 +2,7 @@
     require_once __DIR__ . "/../config/database.php";
 
 header("Content-type: application/vnd-ms-excel");
-header("Content-Disposition: attachment; filename=data_inventaris.xls");
+header("Content-Disposition: attachment; filename=inventaris_perawatan.xls");
 ?>
 
 <table border="1">
