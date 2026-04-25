@@ -131,10 +131,27 @@ $query = mysqli_query($conn,"
                                             </span>
                                         <?php endif; ?>
                                     </td>
-                                    <td>
-                                        <a class="btn-kembali"  href="kembalikan.php?id=<?= $row['id']; ?>">
-                                            Kembalikan
-                                        </a>
+                                    <td class="flex flex-row items-center gap-2 p-3">
+                                        <div><?php if ($row['status'] == 'dipinjam'): ?>
+                                            <a href="kembalikan.php?id=<?= $row['id']; ?>" 
+                                            class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                                            onclick="return confirm('Yakin ingin mengembalikan barang ini?')">
+                                                Kembalikan
+                                            </a>
+                                            <?php else: ?>
+                                            <span class="text-gray-400 italic">Sudah dikembalikan</span>
+                                                    <div class="text-xs text-gray-500 mt-1 font-mono">
+                                                        <?= date("d M Y, H:i", strtotime($row['tanggal_kembali'])); ?>
+                                                    </div>
+                                        <?php endif; ?>
+                                        </div>
+                                        <div>
+                                            <button onclick="openModal(<?= $row['id']; ?>)" 
+                                                class="text-blue-500 hover:text-blue-600"
+                                                title="Cetak">
+                                                <i class="fa fa-print"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                                 <?php } ?>
@@ -163,6 +180,44 @@ $query = mysqli_query($conn,"
             </main>
         </div>
     </div>
+<div id="modalNomor" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg w-96 p-6">
+
+        <h2 class="text-lg font-semibold mb-4">Input Nomor Surat</h2>
+
+        <form method="POST" action="proses_nomor.php">
+            
+            <input type="hidden" name="id" id="modal_id">
+
+            <div class="mb-4">
+                <label class="block text-sm mb-1">Nomor</label>
+
+                <div class="flex">
+                    <input type="text" name="no_surat" required
+                        class="border px-3 py-2 rounded-l w-20"
+                        placeholder="001">
+
+                    <span class="bg-gray-100 px-3 py-2 border border-l-0 rounded-r text-sm">
+                        /LAB-IF/<?= bulanRomawi(date('n')); ?>/<?= date('Y'); ?>
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeModal()" 
+                    class="px-3 py-1 bg-gray-300 rounded">
+                    Batal
+                </button>
+
+                <button type="submit" 
+                    class="px-3 py-1 bg-blue-500 text-white rounded">
+                    Simpan & Cetak
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const toggleBtn = document.getElementById('toggle-btn');
@@ -183,6 +238,23 @@ $query = mysqli_query($conn,"
             }, 3000);
         }
     });
+    const btnKembali = document.getElementById('kembalikan');
+    btnKembali.addEventListener('click', function(event) {
+        
+    });
+
+    function openModal(id) {
+        document.getElementById('modalNomor').classList.remove('hidden');
+        document.getElementById('modalNomor').classList.add('flex');
+
+        document.getElementById('modal_id').value = id;
+    }
+
+    function closeModal() {
+        document.getElementById('modalNomor').classList.add('hidden');
+        document.getElementById('modalNomor').classList.remove('flex');
+    }
+
 </script>
 </body>
 </html>

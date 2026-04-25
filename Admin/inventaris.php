@@ -91,6 +91,18 @@
                             </div>
                         </div>
                     </div>
+
+                <?php if (isset($_GET['delete']) && $_GET['delete'] == 'success'): ?>
+                <div class="bg-red-500 text-white p-3 rounded mb-4 text-center shadow-sm" id="alert">
+                    <i class="fas fa-check-circle mr-2"></i> Barang berhasil dihapus!
+                </div>
+                <?php endif; ?>
+                <?php if (isset($_GET['edit']) && $_GET['edit'] == 'success'): ?>
+                <div class="bg-green-500 text-white p-3 rounded mb-4 text-center shadow-sm" id="alert">
+                    <i class="fas fa-check-circle mr-2"></i> Barang berhasil diedit !
+                </div>
+                <?php endif; ?>
+
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left border-collapse">
                             <thead>
@@ -141,7 +153,7 @@
                                             </a>
                                             <!-- Tombol Delete -->
                                             <a href="delete.php?id=<?= $row['id']; ?>" 
-                                            onclick="return confirm('Yakin ingin menghapus data ini?')"
+                                            onclick="return confirm('Yakin ingin menghapus data ini?')"name="delete"
                                             class="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded transition">
                                                 Delete
                                             </a>
@@ -194,6 +206,14 @@
                 setTimeout(() => alertBox.style.display = 'none', 500);
             }, 3000);
         }
+        setTimeout(() => {
+        const alert = document.getElementById('alert');
+        if (alert) {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+            setTimeout(() => alert.remove(), 500); // hilang total
+        }
+    }, 3000); 
     });
 </script>
 </body>

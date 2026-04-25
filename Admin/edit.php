@@ -1,10 +1,10 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
     session_start();
+    $id = $_GET['id'];
     if (!isset($_GET['id'])) {
         die("ID tidak ditemukan");
     }
-    $id = (int) $_GET['id'];
 
     $query = "SELECT * FROM barang WHERE id = $id";
     $result = mysqli_query($conn, $query);
@@ -29,7 +29,7 @@
  
         $update = "UPDATE barang SET kode_inventaris = '$kode_inventaris', nama_barang = '$nama_barang', merk = '$merk', tipe = '$tipe', spesifikasi = '$spesifikasi', jumlah = '$jumlah', kondisi = '$kondisi', lokasi = '$lokasi', tahun_perolehan = '$tahun_perolehan', keterangan = '$keterangan', tersedia = '$tersedia' WHERE id = $id";
         if (mysqli_query($conn, $update)) {
-            header("Location: dashboard.php?pesan=edit");
+            header("Location: edit.php?edit=success");
             exit;
         } else {
             echo "Gagal update data";
@@ -161,10 +161,10 @@
                         </div>
 
                         <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-end gap-3">
-                            <a href="dashboard.php" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm font-semibold transition flex items-center">
+                            <a href="dashboard_baru.php" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm font-semibold transition flex items-center">
                                 <i class="fas fa-arrow-left mr-2"></i> Batal
                             </a>
-                            <button type="submit" class="px-4 py-2 bg-[#3c8dbc] hover:bg-[#367fa9] text-white rounded text-sm font-semibold shadow-sm transition flex items-center">
+                            <button type="submit" name="update"  class="px-4 py-2 bg-[#3c8dbc] hover:bg-[#367fa9] text-white rounded text-sm font-semibold shadow-sm transition flex items-center">
                                 <i class="fas fa-save mr-2"></i> Simpan Perubahan
                             </button>
                         </div>

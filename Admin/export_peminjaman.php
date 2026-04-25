@@ -8,12 +8,13 @@ header("Content-Disposition: attachment; filename=inventaris_peminjaman.xls");
 <table border="1">
     <tr>
         <th>No</th>
-        <th>Nama Barang</th>
-        <th>Tanggal Lapor</th>
-        <th>Deskripsi Kerusakan</th>
-        <th>Tingkat Kerusakan</th>
-        <th>Status Perbaikan</th>
-        <th>Biaya Perbaikan</th>
+        <th>Nama Peminjam</th>
+        <th>nama barang</th>
+        <th>keperluan</th>
+        <th>Jumlah Barang Dipinjam</th>
+        <th>Tanggal Peminjaman</th>
+        <th>Tanggal Pengembalian</th>
+        <th>Status</th>
     </tr>
 
 <?php
@@ -25,12 +26,13 @@ while($data = mysqli_fetch_assoc($query)){
 
 <tr>
     <td><?php echo $no++; ?></td>
+    <td><?php echo $data['nama_peminjam']; ?></td>
     <td><?php echo $data['nama_barang']; ?></td>
-    <td><?php echo $data['tanggal_lapor']; ?></td>
-    <td><?php echo $data['deskripsi_kerusakan']; ?></td>
-    <td><?php echo $data['tingkat_kerusakan']; ?></td>
-    <td><?php echo $data['status_perbaikan']; ?></td>
-    <td><?php echo $data['biaya_perbaikan']; ?></td>
+    <td><?php echo $data['keperluan']; ?></td>
+    <td><?php echo $data['jml_brng_pinjam']; ?></td>
+    <td><?php echo date("d M Y",strtotime($data['tanggal_pinjam'])); ?></td>
+    <td><?php echo date("d M Y",strtotime($data['tanggal_kembali'])); ?></td>
+    <td><?php echo $data['status']; ?></td>
 </tr>
 
 <?php } ?>
