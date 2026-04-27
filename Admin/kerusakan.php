@@ -114,7 +114,7 @@ $query = mysqli_query($conn,"
                                     <td class="p-3 text-xs text-gray-600"><?= $row['deskripsi_kerusakan']; ?></td>
                                     <td class="p-3 font-mono text-blue-600"><?= $row['tingkat_kerusakan']; ?></td>
                                     <td class="p-3 font-mono text-blue-600"><?= $row['status_perbaikan']; ?></td>
-                                    <td class="p-3 font-medium"><?= $row['biaya_perbaikan']; ?></td>
+                                    <td class="p-3 font-medium"><?= number_format($row['biaya_perbaikan'], 2, ",","."); ?></td>
                                 </tr>
                                 <?php } ?>
                             </tbody>

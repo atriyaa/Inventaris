@@ -4,7 +4,6 @@
     if (!isset($_GET['id'])) {
         die("ID tidak ditemukan");
     }
-    $id = (int) $_GET['id'];
 
     $query = "SELECT * FROM barang WHERE id = $id";
     $result = mysqli_query($conn, $query);
@@ -15,6 +14,7 @@
     }
 
     if (isset($_POST['update'])) {
+        $id = $_GET['id'];
         $kode_inventaris = $_POST["kode_inventaris"];
         $nama_barang = $_POST["nama_barang"];
         $merk = $_POST["merk"];
@@ -29,7 +29,7 @@
  
         $update = "UPDATE barang SET kode_inventaris = '$kode_inventaris', nama_barang = '$nama_barang', merk = '$merk', tipe = '$tipe', spesifikasi = '$spesifikasi', jumlah = '$jumlah', kondisi = '$kondisi', lokasi = '$lokasi', tahun_perolehan = '$tahun_perolehan', keterangan = '$keterangan', tersedia = '$tersedia' WHERE id = $id";
         if (mysqli_query($conn, $update)) {
-            header("Location: dashboard.php?pesan=edit");
+            header("Location: edit.php?edit=success");
             exit;
         } else {
             echo "Gagal update data";
