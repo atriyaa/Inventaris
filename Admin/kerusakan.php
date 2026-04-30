@@ -33,7 +33,7 @@
     // Hitung total data untuk tahu jumlah halaman
     $query_total = "SELECT COUNT(*) AS total 
                     FROM kerusakan
-                    JOIN barang ON kerusakan.id_barang = barang.id 
+                    JOIN barang_detail ON kerusakan.id_detail = barang_detail.id_detail 
                     $where_sql";
     $result_total = mysqli_query($conn, $query_total);
     $row_total = mysqli_fetch_assoc($result_total);
@@ -41,7 +41,7 @@
     $total_halaman = ceil($total_data / $limit);
 
 $query = mysqli_query($conn,"
-    select nama_barang, kode_inventaris, tanggal_lapor, deskripsi_kerusakan, tingkat_kerusakan, status_perbaikan, biaya_perbaikan from barang inner join kerusakan on barang.id = kerusakan.id_barang order by tanggal_lapor desc
+    select * from barang_detail inner join kerusakan on barang_detail.id_detail = kerusakan.id_detail order by tanggal_lapor desc
     LIMIT $limit OFFSET $offset
 ");
 ?>
