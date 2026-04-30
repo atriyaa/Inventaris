@@ -1,5 +1,5 @@
 <?php
-    require_once "config/database.php";
+    require_once "config/database.php.example";
     session_start();
     if (!isset($_SESSION['admin'])) {
         header("Location: ../login.php");
@@ -11,13 +11,13 @@
     $where = [];
 
     if ($filter != 'all') {
-        $where[] = "barang.kategori_id = '$filter'";
+        $where[] = "barang.id_kategori = '$filter'";
     }
 
     if ($lab == 'lab_mm') {
         $where[] = "barang.lokasi = 'LAB MM'";
     } elseif ($lab == 'lab_jarkom') {
-        $where[] = "barang.lokasi = 'LAB Jarkom'";
+        $where[] = "barang. = 'LAB Jarkom'";
     }
 
     $where_sql = '';
@@ -31,18 +31,18 @@
     $offset = ($halaman_aktif - 1) * $limit;
 
     // Hitung total data untuk tahu jumlah halaman
-    $query_total = "SELECT COUNT(*) AS total FROM barang JOIN kategori ON barang.kategori_id = kategori.id $where_sql";
+    $query_total = "SELECT COUNT(*) AS total FROM barang JOIN kategori ON barang.id_kategori = kategori.id_kategori $where_sql";
     $result_total = mysqli_query($conn, $query_total);
     $row_total = mysqli_fetch_assoc($result_total);
     $total_data = $row_total['total'];
     $total_halaman = ceil($total_data / $limit);
 
     $query = "
-        SELECT barang.*, kategori.nama_kategori
+        SELECT *
         FROM barang
-        JOIN kategori ON barang.kategori_id = kategori.id
+        INNER JOIN kategori ON barang.id_kategori = kategori.id_kategori
         $where_sql 
-        ORDER BY barang.id DESC
+        ORDER BY id_barang DESC
         LIMIT $limit OFFSET $offset
     ";
     $result = mysqli_query($conn, $query);
@@ -259,13 +259,10 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Kode</th>
                     <th>Nama Barang</th>
                     <th>Merk</th>
+                    <th>Tipe</th>
                     <th>Spesifikasi</th>
-                    <th>Jumlah</th>
-                    <th>Kondisi</th>
-                    <th>Lokasi</th>
                     <th>Tersedia</th>
                 </tr>
             </thead>
@@ -276,13 +273,10 @@
             <tbody>
                 <tr>
                     <td><?= $no++; ?></td>
-                    <td><span class="kode-text"><?= $row['kode_inventaris']; ?></span></td>
                     <td><?= $row['nama_barang']; ?></td>
                     <td><?= $row['merk']; ?></td>
+                    <td><?= $row['tipe']; ?></td>
                     <td><?= $row['spesifikasi']; ?></td>
-                    <td><?= $row['jumlah']; ?></td>
-                    <td><?= $row['kondisi']; ?></td>
-                    <td><?= $row['lokasi']; ?></td>
                     <td><?= $row['tersedia'] == 1 ? 'Iya' : 'Tidak'; ?></td>
                 </tr>
                 <?php } ?>

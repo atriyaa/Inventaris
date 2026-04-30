@@ -1,5 +1,5 @@
 <?php
-    require_once __DIR__ . "/../config/database.php";
+    include '../config/database.php.example';
     session_start();
     $lab = $_GET['lab'] ?? null;
     $filter = $_GET['filter'] ?? 'all';
