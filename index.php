@@ -42,7 +42,7 @@
         FROM barang
         JOIN kategori ON barang.id_kategori = kategori.id_kategori
         $where_sql 
-        ORDER BY barang.id DESC
+        ORDER BY barang.id_barang DESC
         LIMIT $limit OFFSET $offset
     ";
     $result = mysqli_query($conn, $query);
