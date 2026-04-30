@@ -40,9 +40,9 @@
     $query = "
         SELECT *
         FROM barang
-        INNER JOIN kategori ON barang.id_kategori = kategori.id_kategori
+        JOIN kategori ON barang.kategori_id = kategori.id
         $where_sql 
-        ORDER BY id_barang DESC
+        ORDER BY barang.id DESC
         LIMIT $limit OFFSET $offset
     ";
     $result = mysqli_query($conn, $query);

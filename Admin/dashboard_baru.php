@@ -33,13 +33,22 @@
     // $total_data = $row_total['total'];
     // $total_halaman = ceil($total_data / $limit);
 
-    $count_barang = mysqli_num_rows(mysqli_query($conn, "SELECT id_detail as total from barang_detail"))['total'];
-    $count_kategori = mysqli_num_rows(mysqli_query($conn, "SELECT id_kategori as total from kategori"));
-    $count_kategori_1 = mysqli_num_rows(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=1;"))['total_barang'];
-    $count_kategori_2 = mysqli_num_rows(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=2;"))['total_barang'];
-    $count_kategori_3 = mysqli_num_rows(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=3;"))['total_barang'];
-    $count_kategori_4 = mysqli_num_rows(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=4;"))['total_barang'];
-    $count_kategori_5 = mysqli_num_rows(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=5;"))['total_barang'];
+    // Perbaikan query count
+    // Perbaikan query count dengan pengecekan hasil
+    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_detail) as total FROM barang_detail"));
+    $count_barang = is_array($row) ? $row['total'] : 0;
+    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_kategori) as total FROM kategori"));
+    $count_kategori = is_array($row) ? $row['total'] : 0;
+    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=1;"));
+    $count_kategori_1 = is_array($row) ? $row['total_barang'] : 0;
+    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=2;"));
+    $count_kategori_2 = is_array($row) ? $row['total_barang'] : 0;
+    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=3;"));
+    $count_kategori_3 = is_array($row) ? $row['total_barang'] : 0;
+    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=4;"));
+    $count_kategori_4 = is_array($row) ? $row['total_barang'] : 0;
+    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=5;"));
+    $count_kategori_5 = is_array($row) ? $row['total_barang'] : 0;
     // $count_peminjaman_aktif = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(jml_brng_pinjam) as total_barang FROM peminjaman WHERE status='dipinjam'"))['total_barang'];
     // $count_pengembalian = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jml_brng_pinjam) as total_barang FROM peminjaman WHERE status='dikembalikan'"))['total_barang'];
     // $count_history_peminjaman = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jml_brng_pinjam) as total_barang FROM peminjaman"))['total_barang'];
