@@ -40,7 +40,7 @@
     $query = "
         SELECT barang.*, kategori.nama_kategori
         FROM barang
-        JOIN kategori ON barang.kategori_id = kategori.id
+        JOIN kategori ON barang.id_kategori = kategori.id_kategori
         $where_sql 
         ORDER BY barang.id DESC
         LIMIT $limit OFFSET $offset
