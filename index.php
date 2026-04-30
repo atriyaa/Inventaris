@@ -31,7 +31,7 @@
     $offset = ($halaman_aktif - 1) * $limit;
 
     // Hitung total data untuk tahu jumlah halaman
-    $query_total = "SELECT COUNT(*) AS total FROM barang JOIN kategori ON barang.id_kategori = kategori.id $where_sql";
+    $query_total = "SELECT COUNT(*) AS total FROM barang JOIN kategori ON barang.id_kategori = kategori.id_kategori $where_sql";
     $result_total = mysqli_query($conn, $query_total);
     $row_total = mysqli_fetch_assoc($result_total);
     $total_data = $row_total['total'];
