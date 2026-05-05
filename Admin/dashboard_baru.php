@@ -1,5 +1,5 @@
 <?php
-    include '../config/database.php';
+    include '../config/database.php.example';
     session_start();
     $lab = $_GET['lab'] ?? null;
     $filter = $_GET['filter'] ?? 'all';
@@ -49,13 +49,13 @@
     $count_kategori_4 = is_array($row) ? $row['total_barang'] : 0;
     $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=5;"));
     $count_kategori_5 = is_array($row) ? $row['total_barang'] : 0;
-    // $count_peminjaman_aktif = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(jml_brng_pinjam) as total_barang FROM peminjaman WHERE status='dipinjam'"))['total_barang'];
-    // $count_pengembalian = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jml_brng_pinjam) as total_barang FROM peminjaman WHERE status='dikembalikan'"))['total_barang'];
-    // $count_history_peminjaman = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jml_brng_pinjam) as total_barang FROM peminjaman"))['total_barang'];
-    // $count_perawatan = mysqli_num_rows(mysqli_query($conn, "SELECT id as total_barang FROM perawatan"));
-    // $count_kerusakan = mysqli_num_rows(mysqli_query($conn, "SELECT id_kerusakan as total_barang FROM kerusakan"));
-    // $count_license = mysqli_num_rows(mysqli_query($conn, "SELECT id_license as total_barang FROM license_software"));
-    // $count_user = mysqli_num_rows(mysqli_query($conn, "SELECT id as total_user FROM admin"));
+    $count_peminjaman_aktif = mysqli_fetch_assoc(mysqli_query($conn, "SELECT count(*) as total_barang FROM peminjaman WHERE status='dikembalikan'"))['total_barang']; //masih mencoba (harusnya ini status = "dipinjam")
+    $count_pengembalian = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jml_brng_pinjam) as total_barang FROM peminjaman WHERE status='dikembalikan'"))['total_barang'];
+    $count_history_peminjaman = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jml_brng_pinjam) as total_barang FROM peminjaman"))['total_barang'];
+    $count_perawatan = mysqli_num_rows(mysqli_query($conn, "SELECT id as total_barang FROM perawatan"));
+    $count_kerusakan = mysqli_num_rows(mysqli_query($conn, "SELECT id_kerusakan as total_barang FROM kerusakan"));
+    $count_license = mysqli_num_rows(mysqli_query($conn, "SELECT id_license as total_barang FROM license_software"));
+    $count_user = mysqli_num_rows(mysqli_query($conn, "SELECT id as total_user FROM admin"));
 
 $cards = [
     ['judul' => 'Data Barang', 'jumlah' => $count_barang, 'icon' => 'fa-box', 'bg' => 'bg-green-500', 'link' => 'inventaris.php'],

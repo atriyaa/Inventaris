@@ -1,6 +1,6 @@
 <?php
     session_start();
-    include "config/database.php.example";
+    include "config/database.php";
 
     $username = $_POST['username'];
     $password = $_POST['password'];

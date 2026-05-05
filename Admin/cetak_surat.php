@@ -1,5 +1,5 @@
 <?php
-include '../config/database.php';
+include '../config/database.php.example';
 
 $id = $_GET['id'];
 

@@ -1,5 +1,5 @@
 <?php
-    include "config/database.php.example";
+    include "config/database.php";
     session_start();
 
     $login_message = "";
