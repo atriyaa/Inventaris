@@ -1,5 +1,5 @@
 <?php
-    require_once "config/database.php.example";
+    require_once "config/database.php";
     session_start();
     if (!isset($_SESSION['admin'])) {
         header("Location: ../login.php");
