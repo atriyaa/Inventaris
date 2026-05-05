@@ -1,6 +1,6 @@
 <?php
 // 1. Pastikan path benar. Hapus titik sebelum folder config jika menggunakan __DIR__
-require_once __DIR__ . "/config/database.php";
+require_once __DIR__ . "/../config/database.php";
 
 if (!isset($_GET['$conn'])) {
     die("ID tidak ditemukan");
