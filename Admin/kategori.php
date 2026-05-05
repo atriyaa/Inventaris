@@ -20,19 +20,26 @@
     if (!empty($where)) {
         $where_sql = 'WHERE ' . implode(' AND ', $where);
     }
-    $count_kategori_1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='alat_komputer';"))['total_barang'];
-    $count_kategori_2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='furniture';"))['total_barang'];
-    $count_kategori_3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='perangkat_audio';"))['total_barang'];
-    $count_kategori_4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='elektronik';"))['total_barang'];
-    $count_kategori_5 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='pendingin';"))['total_barang'];
+    $i = 0 ;
+    $warna_list = ['bg-blue-500', 'bg-green-500', 'bg-red-500'];
+    $query = mysqli_query($conn,"SELECT kategori.id_kategori,kategori.nama_kategori,COUNT(barang.id_barang) as total_barang FROM kategori LEFT JOIN barang on barang.id_kategori = kategori.id_kategori GROUP BY kategori.id_kategori");
+    while ($row = mysqli_fetch_assoc($query)){
+        $cards[] = ["judul" => $row['nama_kategori'],'jumlah' => $row['total_barang'], 'icon' => 'fa-box', 'bg' => $warna_list[$i % count($warna_list)],'link' => 'inventaris.php?id_kategori=' . $row['id_kategori']];
+        $i++;
+    }
+    // $count_kategori_1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='alat_komputer';"))['total_barang'];
+    // $count_kategori_2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='furniture';"))['total_barang'];
+    // $count_kategori_3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='perangkat_audio';"))['total_barang'];
+    // $count_kategori_4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='elektronik';"))['total_barang'];
+    // $count_kategori_5 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(b.jumlah) as total_barang FROM barang b INNER JOIN kategori k ON b.kategori_id = k.id WHERE nama_kategori='pendingin';"))['total_barang'];
 
-    $cards = [
-    ['judul' => 'Kategori Alat Komputer', 'jumlah' => $count_kategori_1, 'icon' => 'fa-folder', 'bg' => 'bg-teal-500', 'link' => 'inventaris.php?filter1'],
-    ['judul' => 'Kategori Furniture', 'jumlah' => $count_kategori_2, 'icon' => 'fa-folder-open', 'bg' => 'bg-cyan-500', 'link' => 'inventaris.php?filter2'],
-    ['judul' => 'Kategori Perangkat Audio', 'jumlah' => $count_kategori_3, 'icon' => 'fa-file-alt', 'bg' => 'bg-sky-500', 'link' => 'inventaris.php?filter3'],
-    ['judul' => 'Kategori Elektronik', 'jumlah' => $count_kategori_4, 'icon' => 'fa-archive', 'bg' => 'bg-blue-600', 'link' => 'inventaris.php?filter4'],
-    ['judul' => 'Kategori Pendingin', 'jumlah' => $count_kategori_5, 'icon' => 'fa-layer-group', 'bg' => 'bg-indigo-600', 'link' => 'inventaris.php?filter5']
-    ]
+    // $cards = [
+    // ['judul' => 'Kategori Alat Komputer', 'jumlah' => $count_kategori_1, 'icon' => 'fa-folder', 'bg' => 'bg-teal-500', 'link' => 'inventaris.php?filter1'],
+    // ['judul' => 'Kategori Furniture', 'jumlah' => $count_kategori_2, 'icon' => 'fa-folder-open', 'bg' => 'bg-cyan-500', 'link' => 'inventaris.php?filter2'],
+    // ['judul' => 'Kategori Perangkat Audio', 'jumlah' => $count_kategori_3, 'icon' => 'fa-file-alt', 'bg' => 'bg-sky-500', 'link' => 'inventaris.php?filter3'],
+    // ['judul' => 'Kategori Elektronik', 'jumlah' => $count_kategori_4, 'icon' => 'fa-archive', 'bg' => 'bg-blue-600', 'link' => 'inventaris.php?filter4'],
+    // ['judul' => 'Kategori Pendingin', 'jumlah' => $count_kategori_5, 'icon' => 'fa-layer-group', 'bg' => 'bg-indigo-600', 'link' => 'inventaris.php?filter5']
+    // ]
 ?>
 <!DOCTYPE html>
 <html lang="en">

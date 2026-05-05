@@ -2,12 +2,12 @@
     require_once __DIR__ . "/../config/database.php";
     session_start();
     $lab = $_GET['lab'] ?? null;
-    $filter = $_GET['filter'] ?? 'all';
+    $filter = $_GET['id_kategori'] ?? 'all';
     $filter = mysqli_real_escape_string($conn, $filter);
     $where = [];
 
     if ($filter != 'all') {
-        $where[] = "barang.kategori_id = '$filter'";
+        $where[] = "barang.id_kategori = '$filter'";
     }
 
     if ($lab == 'lab_mm') {
