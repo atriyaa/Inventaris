@@ -27,18 +27,18 @@
     $offset = ($halaman_aktif - 1) * $limit;
 
     // Hitung total data untuk tahu jumlah halaman
-    $query_total = "SELECT COUNT(*) AS total FROM barang JOIN kategori ON barang.kategori_id = kategori.id $where_sql";
+    $query_total = "SELECT COUNT(*) AS total FROM barang JOIN kategori ON barang.id_kategori = kategori.id_kategori $where_sql";
     $result_total = mysqli_query($conn, $query_total);
     $row_total = mysqli_fetch_assoc($result_total);
     $total_data = $row_total['total'];
     $total_halaman = ceil($total_data / $limit);
 
+
+
     $query = "
-        SELECT barang.*, kategori.nama_kategori
-        FROM barang
-        JOIN kategori ON barang.kategori_id = kategori.id
+        SELECT * FROM barang INNER JOIN kategori ON barang.id_kategori = kategori.id_kategori
         $where_sql 
-        ORDER BY barang.kategori_id DESC
+        ORDER BY barang.id_kategori DESC
         LIMIT $limit OFFSET $offset
     ";
     $result = mysqli_query($conn, $query);
@@ -108,16 +108,11 @@
                             <thead>
                                 <tr class="bg-gray-50 border-b text-gray-700">
                                     <th class="p-3 font-bold uppercase text-xs text-center">No</th>
-                                    <th class="p-3 font-bold uppercase text-xs text-center">Kode Inventaris</th>
                                     <th class="p-3 font-bold uppercase text-xs text-center">Nama Barang</th>
                                     <th class="p-3 font-bold uppercase text-xs text-center">Merk</th>
                                     <th class="p-3 font-bold uppercase text-xs text-center">Tipe</th>
                                     <th class="p-3 font-bold uppercase text-xs text-center">Spesifikasi</th>
                                     <th class="p-3 font-bold uppercase text-xs text-center">Jumlah</th>
-                                    <th class="p-3 font-bold uppercase text-xs text-center">Kondisi</th>
-                                    <th class="p-3 font-bold uppercase text-xs text-center">Lokasi</th>
-                                    <th class="p-3 font-bold uppercase text-xs text-center">Tahun Perolehan</th>
-                                    <th class="p-3 font-bold uppercase text-xs text-center">Keterangan</th>
                                     <th class="p-3 font-bold uppercase text-xs text-center">Tersedia</th>
                                     <th class="p-3 font-bold uppercase text-xs text-center">Aksi</th>
                                 </tr>
@@ -129,33 +124,26 @@
                                 ?>
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="p-3 text-center"><?= $no++; ?></td>
-                                    <td class="p-3 font-mono text-blue-600"><?= $row['kode_inventaris']; ?></td>
                                     <td class="p-3 font-medium"><?= $row['nama_barang']; ?></td>
                                     <td class="p-3"><?= $row['merk']; ?></td>
                                     <td class="p-3"><?= $row['tipe']; ?></td>
                                     <td class="p-3 text-xs text-gray-600"><?= $row['spesifikasi']; ?></td>
-                                    <td class="p-3 text-center">
+                                    <td class="p-3 text-center"><a href="detail_inventaris.php">
                                         <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
-                                            <?= $row['jumlah']; ?>
-                                        </span>
+                                            <?= mysqli_num_rows($result_total); ?>
+                                        </span></a>
                                     </td>
-                                    <td class="p-3"><?= $row['kondisi']; ?></td>
-                                    <td class="p-3"><?= $row['lokasi']; ?></td>
-                                    <td class="p-3"><?= $row['tahun_perolehan']; ?></td>
-                                    <td class="p-3"><?= $row['keterangan']; ?></td>
                                     <td class="p-3"><?= $row['tersedia']; ?></td>
                                     <td class="px-4 py-2">
                                         <div class="flex gap-2">
                                             <!-- Tombol Edit -->
-                                            <a href="edit.php?id=<?= $row['id']; ?>" 
-                                            class="px-3 py-1 text-sm bg-yellow-400 hover:bg-yellow-500 text-white rounded transition">
-                                                Edit
+                                            <a href="edit.php?id=<?= $row['id_barang']; ?>" 
+                                            class="px-3 py-1 text-sm bg-yellow-400 hover:bg-yellow-500 text-white rounded transition"><i class="fas fa-edit text-xs"></i>
                                             </a>
                                             <!-- Tombol Delete -->
-                                            <a href="delete.php?id=<?= $row['id']; ?>" 
+                                            <a href="delete.php?id=<?= $row['id_barang']; ?>" 
                                             onclick="return confirm('Yakin ingin menghapus data ini?')"name="delete"
-                                            class="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded transition">
-                                                Delete
+                                            class="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded transition"><i class="fas fa-trash text-xs"></i>
                                             </a>
 
                                         </div>

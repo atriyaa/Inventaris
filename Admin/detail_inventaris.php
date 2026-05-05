@@ -1,51 +1,49 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
     session_start();
+    $lab = $_GET['lab'] ?? null;
+    $filter = $_GET['filter'] ?? 'all';
+    $filter = mysqli_real_escape_string($conn, $filter);
+    $where = [];
 
-    $limit = 10;
+    if ($filter != 'all') {
+        $where[] = "barang.kategori_id = '$filter'";
+    }
+
+    if ($lab == 'lab_mm') {
+        $where[] = "barang.lokasi = 'LAB MM'";
+    } elseif ($lab == 'lab_jarkom') {
+        $where[] = "barang.lokasi = 'LAB Jarkom'";
+    }
+
+    $where_sql = '';
+    if (!empty($where)) {
+        $where_sql = 'WHERE ' . implode(' AND ', $where);
+    }
+
+    $limit = 15;
     $halaman_aktif = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
     if ($halaman_aktif <= 0) $halaman_aktif = 1;
     $offset = ($halaman_aktif - 1) * $limit;
 
-    // 1. Definisikan variabel awal agar tidak "Undefined"
-    $where_sql = ''; 
-    $where = [];
-
-    // 2. Logika filter (ambil dari kode sebelumnya)
-    $lab = $_GET['lab'] ?? null;
-    $filter = $_GET['filter'] ?? 'all';
-
-    if ($filter != 'all') {
-    $where[] = "barang.kategori_id = '$filter'";
-    }
-
-    if ($lab == 'lab_mm') {
-    $where[] = "barang.lokasi = 'LAB MM'";
-    } elseif ($lab == 'lab_jarkom') {
-    $where[] = "barang.lokasi = 'LAB Jarkom'";
-    }
-
-    // 3. Gabungkan array menjadi string WHERE
-    if (!empty($where)) {
-    $where_sql = 'WHERE ' . implode(' AND ', $where);
-    }
-
     // Hitung total data untuk tahu jumlah halaman
-    $query_total = "SELECT COUNT(id_license) AS total 
-                    FROM software_license
-                    $where_sql";
+    $query_total = "SELECT COUNT(*) AS total FROM barang_detail JOIN barang ON barang_detail.id_barang = barang.id_barang $where_sql";
     $result_total = mysqli_query($conn, $query_total);
     $row_total = mysqli_fetch_assoc($result_total);
     $total_data = $row_total['total'];
     $total_halaman = ceil($total_data / $limit);
 
-$query = mysqli_query($conn,"
-    SELECT * FROM software_license
-    LIMIT $limit OFFSET $offset
-");
+    $query = "
+        SELECT * FROM barang_detail INNER JOIN barang ON barang_detail.id_barang = barang.id_barang
+        $where_sql 
+        ORDER BY barang.id_barang DESC
+        LIMIT $limit OFFSET $offset
+    ";
+    $result = mysqli_query($conn, $query);
+
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,55 +64,67 @@ $query = mysqli_query($conn,"
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen overflow-hidden">
         <?php include '../include/menu.php'; ?>
+        
         <div class="flex-1 flex flex-col overflow-y-auto">
             <?php include '../include/header_hlm.php'; ?>
+
             <main class="p-6">
-                <div class="bg-white border-t-4 border-blue-400 rounded shadows-sm overflow-hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-light">Dashboard </h1>
+                    <nav class="text-xs text-gray-500"><i class="fas fa-home"></i> <a href="../index.php">Home</a> > <a href="dashboard_baru.php">Dashboard</a></nav>
+                </div>
+                <div class="bg-white border-t-4 border-blue-400 rounded shadow-sm overflow-hidden">
                     <div class="px-4 py-3 border-b flex items-center justify-between bg-white w-full">
-                        <h3 class="font-semibold text-gray-700 text-lg whitespace-nowrap">License Software</h3>
+                        <h3 class="font-semibold text-gray-700 text-lg">Barang</h3>
                         <div class="px-5 py-3 border-b flex items-center justify-end bg-white w-full flex gap-4">
                             <div class="flex-shrink-0">
-                                <a href="form_license.php" class="inline-flex items-center bg-[#3c8dbc] hover:bg-[#367fa9] text-white text-xs font-bold px-3 py-2 rounded shadow-sm transition-all uppercase tracking-wider">
-                                    <i class="fas fa-plus mr-2"></i> Tambah License
+                                <a href="tambah_data.php" class="inline-flex items-center bg-[#3c8dbc] hover:bg-[#367fa9] text-white text-xs font-bold px-3 py-2 rounded shadow-sm transition-all uppercase tracking-wider">
+                                    <i class="fas fa-plus mr-2"></i> Tambah Barang
                                 </a>
                             </div>
                             <div class="flex-shrink-0">
-                                <a href="export_license.php" class="inline-flex items-center bg-[#3c8dbc] hover:bg-[#367fa9] text-white text-xs font-bold px-3 py-2 rounded shadow-sm transition-all uppercase tracking-wider">
+                                <a href="export_inventaris.php" class="inline-flex items-center bg-[#3c8dbc] hover:bg-[#367fa9] text-white text-xs font-bold px-3 py-2 rounded shadow-sm transition-all uppercase tracking-wider">
                                     <i class="fas fa-file-excel mr-2"></i> Export Excel
                                 </a>
                             </div>
                         </div>
                     </div>
+
+                <?php if (isset($_GET['delete']) && $_GET['delete'] == 'success'): ?>
+                <div class="bg-red-500 text-white p-3 rounded mb-4 text-center shadow-sm" id="alert">
+                    <i class="fas fa-check-circle mr-2"></i> Barang berhasil dihapus!
+                </div>
+                <?php endif; ?>
+                <?php if (isset($_GET['edit']) && $_GET['edit'] == 'success'): ?>
+                <div class="bg-green-500 text-white p-3 rounded mb-4 text-center shadow-sm" id="alert">
+                    <i class="fas fa-check-circle mr-2"></i> Barang berhasil diedit !
+                </div>
+                <?php endif; ?>
+
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left border-collapse">
                             <thead>
                                 <tr class="bg-gray-50 border-b text-gray-700">
-                                    <th class="p-3 font-bold uppercase text-xs">No</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Nama Software</th>
-                                    <th class="p-3 font-bold uppercase text-xs">License Key</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tipe License</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tanggal Pembelian</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tanggal Expired</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Jumlah User</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Status Aktif</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Keterangan</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">No</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Kode Unit</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Kondisi</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Status</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Lokasi Meja</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Lokasi Ruang</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200">
+                            <tbody class="divide-y divide-gray-200 text-center">
                                 <?php
                                 $no = $offset + 1;
-                                while ($row = mysqli_fetch_assoc($query)) {
+                                while ($row = mysqli_fetch_assoc($result)) {
                                 ?>
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="p-3 text-center"><?= $no++; ?></td>
-                                    <td class="p-3 font-mono text-blue-600"><?= $row['nama_software']; ?></td>
-                                    <td class="p-3 font-mono text-blue-600"><?= $row['license_key']; ?></td>
-                                    <td class="p-3 font-medium"><?= $row['tipe_license']; ?></td>
-                                    <td class="p-3 text-xs text-gray-600"><?= date("d M Y",strtotime($row['tanggal_pembelian'])); ?></td>
-                                    <td class="p-3 font-mono text-blue-600"><?= date("d M Y",strtotime($row['tanggal_expired'])); ?></td>
-                                    <td class="p-3 font-medium"><?= $row['jumlah_user']; ?></td>
-                                    <td class="p-3 text-xs text-gray-600"><?= $row['status_aktif']; ?></td>
-                                    <td class="p-3 text-xs text-gray-600"><?= $row['keterangan']; ?></td>
+                                    <td class="p-3 font-mono text-blue-600"><?= $row['kode_unit']; ?></td>
+                                    <td class="p-3 font-medium"><?= $row['kondisi']; ?></td>
+                                    <td class="p-3"><?= $row['status']; ?></td>
+                                    <td class="p-3"><?= $row['lokasi_meja']; ?></td>
+                                    <td class="p-3 text-xs text-gray-600"><?= $row['lokasi_ruang']; ?></td>
                                 </tr>
                                 <?php } ?>
                             </tbody>
@@ -161,6 +171,14 @@ $query = mysqli_query($conn,"
                 setTimeout(() => alertBox.style.display = 'none', 500);
             }, 3000);
         }
+        setTimeout(() => {
+        const alert = document.getElementById('alert');
+        if (alert) {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+            setTimeout(() => alert.remove(), 500); // hilang total
+        }
+    }, 3000); 
     });
 </script>
 </body>
