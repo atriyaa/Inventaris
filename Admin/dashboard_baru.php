@@ -38,7 +38,7 @@
     $count_admin = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total_admin FROM admin"))['total_admin'];
     $count_barang = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total_barang FROM barang"))['total_barang'];
     $count_kategori1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total_barang FROM barang_detail INNER JOIN barang on barang_detail.id_barang = barang.id_barang WHERE id_kategori=1"))['total_barang'];
-    $count_license = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_license FROM  software_license "))['total_liccense'];
+    $count_license = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_license FROM  software_license "))['total_license'];
     $count_kategori = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_kategori FROM kategori"))['total_kategori'];
     $count_peminjaman_aktif = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_peminjaman FROM peminjaman"))['total_peminjaman'];
     $count_kerusakan = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total_kerusakan FROM kerusakan WHERE status_perbaikan='Menunggu'"))['total_kerusakan'];
