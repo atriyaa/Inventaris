@@ -18,7 +18,7 @@
 
     $where_sql = '';
     if (!empty($where)) {
-        $where_sql = 'WHERE ' . implode(' AND ', $where);
+        $where_sql = 'WHERE ' . implode(' AND  ', $where);
     }
 
     // $limit = 15;
