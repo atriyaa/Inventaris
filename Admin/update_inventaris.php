@@ -1,31 +1,50 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
     session_start();
-    $id = $_GET['id_detail'];
+    $id_barang = $_GET['id_barang'] ?? null;
 
-    $query = "SELECT * FROM barang_detail WHERE id_detail = $id";
+    if (!$id_barang){
+        die("ID barang tidak ditemukan.");
+    }
+    $id_barang = mysqli_real_escape_string($conn, $id_barang);
+
+    $query = "
+    SELECT *
+    FROM barang
+    WHERE id_barang = '$id_barang'
+    ";
     $result = mysqli_query($conn, $query);
     $data = mysqli_fetch_assoc($result);
-
     if (!$data) {
-        die("Data tidak ditemukan");
+        die("Barang tidak ditemukan.");
     }
 
-    if (isset($_POST['update'])) {
-        $kode_unit = $_GET['kode_unit'];
-        $kondisi = $_GET['kondisi'];
-        $status = $_GET['status'];
-        $lokasi_meja = $_GET['lokasi_meja'];
-        $lokasi_ruang = $_GET['lokasi_ruang'];
- 
-        $update = "UPDATE barang_detail SET kode_unit = '$kode_unit', kondisi = '$kondisi', status = '$status', lokasi_meja = '$lokasi_meja', lokasi_ruang = '$lokasi_ruang' WHERE id_detail = $id";
-        if (mysqli_query($conn, $update)) {
-            header("Location: update_detail_barang.php?edit=success");
-            exit;
-        } else {
-            echo "Gagal update data";
-        }
-        }
+    if (isset($_POST['update'])){
+        $id_kategori = mysqli_real_escape_string($conn, $_POST['id_kategori']);
+        $nama_barang = mysqli_real_escape_string($conn, $_POST['nama_barang']);
+        $merk = mysqli_real_escape_string($conn, $_POST['merk']);
+        $tipe = mysqli_real_escape_string($conn, $_POST['tipe']);
+        $spesifikasi = mysqli_real_escape_string($conn, $_POST['spesifikasi']);
+        $tersedia = mysqli_real_escape_string($conn, $_POST['tersedia']);
+        
+        $update = "
+        UPDATE barang 
+        SET 
+        id_kategori = '$id_kategori',
+    nama_barang = '$nama_barang',
+    merk = '$merk',
+    tipe = '$tipe',
+    spesifikasi = '$spesifikasi',
+    tersedia = '$tersedia'
+    WHERE id_barang = '$id_barang'
+    ";
+    if (mysqli_query($conn, $update)){
+        header("Location: inventaris.php?create=success");
+        exit;
+    } else {
+            echo "Gagal Update";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,43 +99,39 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">Kode Unit</label>
-                                <input type="text" name="kode_unit" value="<?= $data['kode_unit']; ?>" required
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Nama Barang</label>
+                                <input type="text" name="nama_barang" value="<?= $data['nama_barang']; ?>" required
                                     class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">Kondisi</label>
-                                <select name="kondisi" class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
-                                    <option value="Baik" <?= $data['kondisi'] == 'Baik' ? 'selected' : ''; ?>>Baik</option>
-                                    <option value="Rusak" <?= $data['kondisi'] == 'Rusak' ? 'selected' : ''; ?>>Cukup</option>
-                                    <option value="Perbaikan" <?= $data['kondisi'] == 'Perbaikan' ? 'selected' : ''; ?>>Rusak</option>
-                                </select>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Merk</label>
+                                <input type="text" name="merk" value="<?= $data['merk']; ?>" required
+                                class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Tipe</label>
+                                <input type="text" name="tipe" value="<?= $data['tipe']; ?>" required
+                                class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Spesifikasi</label>
+                                <input type="text" name="spesifikasi" value="<?= $data['spesifikasi']; ?>" required
+                                class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
                             </div>
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">Lokasi Meja</label>
-                                <input type="text" name="lokasi_meja" value="<?= $data['lokasi_meja']; ?>" required
-                                    class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">Status</label>
-                                <select name="status" class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
-                                    <option value="Tersedia" <?= $data['kondisi'] == 'Tersedia' ? 'selected' : '';?> >Tersedia</option>
-                                    <option value=" Tidak Tersedia" <?= $data['kondisi'] == 'Tidak Tersedia' ? 'selected' : ''; ?> >Tidak Tersedia</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">Lokasi Ruang</label>
-                                <select name="lokasi_ruang" class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
-                                    <option value="LAB MM" <?= $data['kondisi'] == 'LAB MM' ? 'selected' : ''; ?> >LAB MM</option>
-                                    <option value="LAB JARKOM" <?= $data['kondisi'] == 'LAB JARKOM' ? 'selected' : ''; ?> >LAB JARKOM</option>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Tersedia</label>
+                                <select name="tersedia" class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
+                                    <option value="Tersedia" <?= $data['tersedia'] == 'Tersedia' ? 'selected' : '';?> >Tersedia</option>
+                                    <option value=" Tidak Tersedia" <?= $data['tersedia'] == 'Tidak Tersedia' ? 'selected' : ''; ?> >Tidak Tersedia</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-end gap-3">
-                            <a href="detail_barang.php" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm font-semibold transition flex items-center">
+                            <a href="inventaris.php" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm font-semibold transition flex items-center">
                                 <i class="fas fa-arrow-left mr-2"></i> Batal
                             </a>
                             <button name="update"  type="submit" class="px-4 py-2 bg-[#3c8dbc] hover:bg-[#367fa9] text-white rounded text-sm font-semibold shadow-sm transition flex items-center">

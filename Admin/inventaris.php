@@ -3,17 +3,18 @@
     session_start();
     $lab = $_GET['lab'] ?? null;
     $filter = $_GET['id_kategori'] ?? 'all';
+
     $filter = mysqli_real_escape_string($conn, $filter);
     $where = [];
 
-    if ($filter != 'all') {
+    if ($filter != 'all'){
         $where[] = "barang.id_kategori = '$filter'";
     }
-
-    if ($lab == 'lab_mm') {
-        $where[] = "barang.lokasi = 'LAB MM'";
-    } elseif ($lab == 'lab_jarkom') {
-        $where[] = "barang.lokasi = 'LAB Jarkom'";
+    
+    if ($lab == 'LAB MM'){
+        $where[] = "barang_detail.lokasi_ruang = 'LAB MM'";
+    } elseif ($lab == 'LAB JARKOM'){
+        $where[] = "barang_detail.lokasi_ruang 'LAB JARKOM'";
     }
 
     $where_sql = '';
@@ -22,24 +23,64 @@
     }
 
     $limit = 15;
-    $halaman_aktif = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
-    if ($halaman_aktif <= 0) $halaman_aktif = 1;
+    $halaman_aktif = isset($GET['halaman'])
+        ? (int) $GET['halaman']
+        : 1;
+
+    if($halaman_aktif <= 0){
+        $halaman_aktif = 1;
+    } 
     $offset = ($halaman_aktif - 1) * $limit;
 
-    // Hitung total data untuk tahu jumlah halaman
-    $query_total = "SELECT COUNT(*) AS total FROM barang JOIN kategori ON barang.id_kategori = kategori.id_kategori $where_sql";
+    $query_total = "
+    SELECT COUNT(DISTINCT barang.id_barang) AS total
+    FROM barang
+    INNER JOIN kategori ON
+    barang.id_kategori = kategori.id_kategori
+    LEFT JOIN barang_detail ON
+    barang.id_barang = barang_detail.id_barang
+    $where_sql
+    ";
+
     $result_total = mysqli_query($conn, $query_total);
     $row_total = mysqli_fetch_assoc($result_total);
     $total_data = $row_total['total'];
     $total_halaman = ceil($total_data / $limit);
 
-
-
     $query = "
-        SELECT * FROM barang INNER JOIN kategori ON barang.id_kategori = kategori.id_kategori
-        $where_sql 
-        ORDER BY barang.id_kategori DESC
-        LIMIT $limit OFFSET $offset
+    SELECT
+    barang.id_barang,
+    barang.id_kategori,
+    barang.nama_barang,
+    barang.merk,
+    barang.tipe,
+    barang.spesifikasi,
+    barang.tersedia,
+    
+    kategori.nama_kategori,
+    
+    COUNT(barang_detail.id_detail) AS jumlah_barang
+    FROM barang
+    
+    INNER JOIN kategori ON
+    barang.id_kategori = kategori.id_kategori
+    
+    LEFT JOIN barang_detail ON
+    barang.id_barang = barang_detail.id_barang
+
+    $where_sql
+    
+    GROUP BY 
+    barang.id_barang,
+    barang.id_kategori,
+    barang.nama_barang,
+    barang.merk,
+    barang.tipe,
+    barang.spesifikasi,
+    barang.tersedia
+    ORDER BY barang.id_barang DESC
+    LIMIT $limit OFFSET $offset
+    
     ";
     $result = mysqli_query($conn, $query);
 
@@ -128,16 +169,17 @@
                                     <td class="p-3"><?= $row['merk']; ?></td>
                                     <td class="p-3"><?= $row['tipe']; ?></td>
                                     <td class="p-3 text-xs text-gray-600"><?= $row['spesifikasi']; ?></td>
-                                    <td class="p-3 text-center"><a href="detail_inventaris.php">
+                                    <td class="p-3 text-center">
+                                        <a href="detail_inventaris.php?id_barang=<?= $row['id_barang']; ?>">
                                         <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
-                                            <?= mysqli_num_rows($result_total); ?>
+                                            <?= $row['jumlah_barang']; ?>
                                         </span></a>
                                     </td>
                                     <td class="p-3"><?= $row['tersedia']; ?></td>
                                     <td class="px-4 py-2">
                                         <div class="flex gap-2">
                                             <!-- Tombol Edit -->
-                                            <a href="edit.php?id=<?= $row['id_barang']; ?>" 
+                                            <a href="update_inventaris.php?id_barang=<?= $row['id_barang']; ?>" 
                                             class="px-3 py-1 text-sm bg-yellow-400 hover:bg-yellow-500 text-white rounded transition"><i class="fas fa-edit text-xs"></i>
                                             </a>
                                             <!-- Tombol Delete -->

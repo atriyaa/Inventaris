@@ -1,43 +1,56 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
     session_start();
-    $lab = $_GET['lab'] ?? null;
-    $filter = $_GET['filter'] ?? 'all';
-    $filter = mysqli_real_escape_string($conn, $filter);
-    $where = [];
-
-    if ($filter != 'all') {
-        $where[] = "barang.kategori_id = '$filter'";
+    $id_barang = $_GET['id_barang'] ?? null;
+    if (!$id_barang){
+        die("ID barang tidak ditemukan.");
     }
-
-    if ($lab == 'lab_mm') {
-        $where[] = "barang.lokasi = 'LAB MM'";
-    } elseif ($lab == 'lab_jarkom') {
-        $where[] = "barang.lokasi = 'LAB Jarkom'";
-    }
-
-    $where_sql = '';
-    if (!empty($where)) {
-        $where_sql = 'WHERE ' . implode(' AND ', $where);
-    }
+    $id_barang = mysqli_real_escape_string($conn, $id_barang);
 
     $limit = 15;
-    $halaman_aktif = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
-    if ($halaman_aktif <= 0) $halaman_aktif = 1;
+    $halaman_aktif = isset($_GET['halaman'])
+        ? (int)$_GET['halaman']
+        : 1;
+    if ($halaman_aktif <= 0) {
+        $halaman_aktif = 1;
+    }
     $offset = ($halaman_aktif - 1) * $limit;
-
-    // Hitung total data untuk tahu jumlah halaman
-    $query_total = "SELECT COUNT(*) AS total FROM barang_detail JOIN barang ON barang_detail.id_barang = barang.id_barang $where_sql";
+    
+    $query_total = "
+        SELECT COUNT(*) AS total
+        FROM barang_detail
+        WHERE id_barang = '$id_barang'
+    ";
     $result_total = mysqli_query($conn, $query_total);
     $row_total = mysqli_fetch_assoc($result_total);
     $total_data = $row_total['total'];
     $total_halaman = ceil($total_data / $limit);
 
+    $query_barang = "
+    SELECT
+        barang.nama_barang,
+        kategori.nama_kategori
+
+    FROM barang
+
+    INNER JOIN kategori
+        ON barang.id_kategori = kategori.id_kategori
+
+    WHERE barang.id_barang = '$id_barang'
+    ";
+
+$result_barang = mysqli_query($conn, $query_barang);
+
+$data_barang = mysqli_fetch_assoc($result_barang);
+
+
     $query = "
-        SELECT * FROM barang_detail INNER JOIN barang ON barang_detail.id_barang = barang.id_barang
-        $where_sql 
-        ORDER BY barang.id_barang DESC
-        LIMIT $limit OFFSET $offset
+    SELECT 
+    barang_detail.*
+    FROM barang_detail 
+    WHERE barang_detail.id_barang = '$id_barang'
+    ORDER BY barang_detail.id_detail DESC
+    LIMIT $limit OFFSET $offset
     ";
     $result = mysqli_query($conn, $query);
 
@@ -111,6 +124,7 @@
                                     <th class="p-3 font-bold uppercase text-xs text-center">Status</th>
                                     <th class="p-3 font-bold uppercase text-xs text-center">Lokasi Meja</th>
                                     <th class="p-3 font-bold uppercase text-xs text-center">Lokasi Ruang</th>
+                                    <th class="p-3 font-bold uppercase text-xs text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 text-center">
@@ -125,6 +139,19 @@
                                     <td class="p-3"><?= $row['status']; ?></td>
                                     <td class="p-3"><?= $row['lokasi_meja']; ?></td>
                                     <td class="p-3 text-xs text-gray-600"><?= $row['lokasi_ruang']; ?></td>
+                                    <td class="px-4 py-2">
+                                        <div class="flex gap-2">
+                                            <!-- Tombol Edit -->
+                                            <a href="update_detail_inventaris.php?id_detail=<?= $row['id_detail']; ?>&id_barang=<?= $row['id_barang']; ?>" 
+                                            class="px-3 py-1 text-sm bg-yellow-400 hover:bg-yellow-500 text-white rounded transition"><i class="fas fa-edit text-xs"></i>
+                                            </a>
+                                            <!-- Tombol Delete -->
+                                            <a href="delete.php?id=<?= $row['id_detail']; ?>" 
+                                            onclick="return confirm('Yakin ingin menghapus data ini?')"name="delete"
+                                            class="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded transition"><i class="fas fa-trash text-xs"></i>
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
                                 <?php } ?>
                             </tbody>
@@ -133,7 +160,7 @@
                             <p class="text-sm text-gray-700">Showing <span class="font-semibold"><?= ($offset + 1); ?></span> to <span class="font-semibold"><?= min($offset + $limit, $total_data); ?></span> of <span class="font-semibold"> <?= $total_data; ?></span> entries </p>
                             <ul class="flex items-center -space-x-px shadow-sm rounded-md text-sm font-medium">
                                 <?php if($halaman_aktif > 1): ?>
-                                    <li class="inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 transition"><a href="?halaman=<?= $halaman_aktif - 1; ?>&lab=<?= $lab; ?>&filter=<?= $filter; ?>">Previous</a></li>
+                                    <li class="inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 transition"><a href="?id_barang=<?= $id_barang; ?>&halaman=<?= $halaman_aktif - 1; ?>">Previous</a></li>
                                 <?php else: ?>
                                     <li class="inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed">Previous</li>
                                 <?php endif; ?>
@@ -141,7 +168,7 @@
                                 <li class="z-10 bg-blue-600 border-blue-600 text-white inline-flex items-center px-4 py-2 border font-bold"><?= $halaman_aktif; ?></li>
 
                                 <?php if($halaman_aktif < $total_halaman): ?>
-                                    <li class="inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 transition"><a href="?halaman=<?= $halaman_aktif + 1; ?>&lab=<?= $lab; ?>&filter=<?= $filter; ?>">Next</a></li>
+                                    <li class="inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 transition"><a href="?id_barang=<?= $id_barang; ?>&halaman=<?= $halaman_aktif + 1; ?>">Next</a></li>
                                 <?php else: ?>
                                     <li class="inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed">Next</li>
                                 <?php endif; ?>
