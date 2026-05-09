@@ -1,23 +1,19 @@
 <?php
     require_once "config/database.php";
-    session_start();
-    if (!isset($_SESSION['admin'])) {
-        header("Location: ../login.php");
-        exit;
-    }
     $lab = $_GET['lab'] ?? null;
-    $filter = $_GET['filter'] ?? 'all';
+    $filter = $_GET['id_kategori'] ?? 'all';
+
     $filter = mysqli_real_escape_string($conn, $filter);
     $where = [];
 
-    if ($filter != 'all') {
+    if ($filter != 'all'){
         $where[] = "barang.id_kategori = '$filter'";
     }
 
-    if ($lab == 'lab_mm') {
-        $where[] = "barang.lokasi = 'LAB MM'";
-    } elseif ($lab == 'lab_jarkom') {
-        $where[] = "barang. = 'LAB Jarkom'";
+    if ($lab == 'LAB MM') {
+        $where[] = "barang_detail.lokasi_ruang = 'LAB MM'";
+    } elseif ($lab == 'LAB JARKOM') {
+        $where[] = "barang_detail.lokasi_ruang = 'LAB JARKOM'";
     }
 
     $where_sql = '';
@@ -38,12 +34,53 @@
     $total_halaman = ceil($total_data / $limit);
 
     $query = "
-        SELECT *
+        SELECT COUNT(DISTINCT barang.id_barang) as total
         FROM barang
-        JOIN kategori ON barang.id_kategori = kategori.id_kategori
-        $where_sql 
-        ORDER BY barang.id DESC
-        LIMIT $limit OFFSET $offset
+        INNER JOIN kategori ON
+        barang.id_kategori = kategori.id_kategori
+        LEFT JOIN barang_detail ON 
+        barang.id_barang = barang_detail.id_barang
+        $where_sql
+    ";
+    $result_total = mysqli_query($conn, $query);
+    $row_total = mysqli_fetch_assoc($result_total);
+    $total_data = $row_total['total'];
+    $total_halaman = ceil($total_data / $limit);
+
+    $query = "
+    SELECT
+    barang.id_barang,
+    barang.id_kategori,
+    barang.nama_barang,
+    barang.merk,
+    barang.tipe,
+    barang.spesifikasi,
+    barang.tersedia,
+    
+    kategori.nama_kategori,
+    
+    COUNT(barang_detail.id_detail) AS jumlah_barang
+    FROM barang
+    
+    INNER JOIN kategori ON
+    barang.id_kategori = kategori.id_kategori
+    
+    LEFT JOIN barang_detail ON
+    barang.id_barang = barang_detail.id_barang
+
+    $where_sql
+    
+    GROUP BY 
+    barang.id_barang,
+    barang.id_kategori,
+    barang.nama_barang,
+    barang.merk,
+    barang.tipe,
+    barang.spesifikasi,
+    barang.tersedia
+    ORDER BY barang.id_barang DESC
+    LIMIT $limit OFFSET $offset
+    
     ";
     $result = mysqli_query($conn, $query);
 
@@ -56,7 +93,7 @@
         <link rel="stylesheet" href="../assets/style.css"
         <meta charset="UTF-8">
         <title>Inventaris Laboratorium Informatika</title>
-        <style>
+    <style>
             /* Reset & Base */
             body {
                 background-color: #f4f7fa;
@@ -234,7 +271,7 @@
             border-top-right-radius: 4px;
             border-bottom-right-radius: 4px;
         }
-        </style>
+    </style>
     </head>
 <body>
 <div class="main-container">

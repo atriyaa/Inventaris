@@ -35,45 +35,38 @@
 
     // Perbaikan query count
     // Perbaikan query count dengan pengecekan hasil
-    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_detail) as total FROM barang_detail"));
-    $count_barang = is_array($row) ? $row['total'] : 0;
-    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_kategori) as total FROM kategori"));
-    $count_kategori = is_array($row) ? $row['total'] : 0;
-    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=1;"));
-    $count_kategori_1 = is_array($row) ? $row['total_barang'] : 0;
-    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=2;"));
-    $count_kategori_2 = is_array($row) ? $row['total_barang'] : 0;
-    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=3;"));
-    $count_kategori_3 = is_array($row) ? $row['total_barang'] : 0;
-    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=4;"));
-    $count_kategori_4 = is_array($row) ? $row['total_barang'] : 0;
-    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_barang) as total_barang FROM barang WHERE id_kategori=5;"));
-    $count_kategori_5 = is_array($row) ? $row['total_barang'] : 0;
-    $count_peminjaman_aktif = mysqli_fetch_assoc(mysqli_query($conn, "SELECT count(*) as total_barang FROM peminjaman WHERE status='dikembalikan'"))['total_barang']; //masih mencoba (harusnya ini status = "dipinjam")
-    $count_pengembalian = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jml_brng_pinjam) as total_barang FROM peminjaman WHERE status='dikembalikan'"))['total_barang'];
-    $count_history_peminjaman = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(jml_brng_pinjam) as total_barang FROM peminjaman"))['total_barang'];
-    $count_perawatan = mysqli_num_rows(mysqli_query($conn, "SELECT id as total_barang FROM perawatan"));
-    $count_kerusakan = mysqli_num_rows(mysqli_query($conn, "SELECT id_kerusakan as total_barang FROM kerusakan"));
-    $count_license = mysqli_num_rows(mysqli_query($conn, "SELECT id_license as total_barang FROM license_software"));
-    $count_user = mysqli_num_rows(mysqli_query($conn, "SELECT id as total_user FROM admin"));
+    // Query untuk menghitung total barang (yang ada di tabel detail)
+    $count_barang = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM barang_detail"))['total'] ?? 0;
 
-$cards = [
-    ['judul' => 'Data Admin', 'jumlah' => $count_admin, 'icon' => 'fa-box', 'bg' => 'bg-green-500', 'link' => 'inventaris.php'],
-    ['judul' => 'Total Barang', 'jumlah' => $count_barang, 'icon' => 'fa-users', 'bg' => 'bg-yellow-500', 'link' => 'dashboard_baru.php'],
-    ['judul' => 'Kategori', 'jumlah' => $count_kategori, 'icon' => 'fa-tags', 'bg' => 'bg-blue-500', 'link' => 'kategori.php'],
-    ['judul' => 'Peminjaman Aktif', 'jumlah' => $count_peminjaman_aktif, 'icon' => 'fa-exchange-alt', 'bg' => 'bg-blue-400', 'link' => 'peminjaman.php'],
-    ['judul' => 'Barang Rusak', 'jumlah' => $count_kerusakan, 'icon' => 'fa-exclamation-triangle', 'bg' => 'bg-red-500', 'link' => 'kerusakan.php'],
-    ['judul' => 'Dalam Perawatan', 'jumlah' => $count_perawatan, 'icon' => 'fa-wrench', 'bg' => 'bg-orange-500', 'link' => 'perawatan.php'],
-    ['judul' => 'Total License', 'jumlah' => $count_license, 'icon' => 'fa-key', 'bg' => 'bg-purple-600', 'link' => 'license.php'],
-    // ['judul' => 'Kategori Alat Komputer', 'jumlah' => $count_kategori_1, 'icon' => 'fa-folder', 'bg' => 'bg-teal-500', 'link' => 'kategori.php'],
-    // ['judul' => 'Kategori Furniture', 'jumlah' => $count_kategori_2, 'icon' => 'fa-folder-open', 'bg' => 'bg-cyan-500', 'link' => 'kategori.php'],
-    // ['judul' => 'Kategori Perangkat Audio', 'jumlah' => $count_kategori_3, 'icon' => 'fa-file-alt', 'bg' => 'bg-sky-500', 'link' => 'kategori.php'],
-    // ['judul' => 'Kategori Elektronik', 'jumlah' => $count_kategori_4, 'icon' => 'fa-archive', 'bg' => 'bg-blue-600', 'link' => 'kategori.php'],
-    // ['judul' => 'Kategori Pendingin', 'jumlah' => $count_kategori_5, 'icon' => 'fa-layer-group', 'bg' => 'bg-indigo-600', 'link' => 'kategori.php'],
-    // ['judul' => 'Pengembalian', 'jumlah' => $count_pengembalian, 'icon' => 'fa-check-circle', 'bg' => 'bg-emerald-500', 'link' => 'peminjaman.php'],
-    // ['judul' => 'History Pinjam', 'jumlah' => $count_history_peminjaman, 'icon' => 'fa-history', 'bg' => 'bg-slate-500', 'link' => 'peminjaman.php'],
-];
-?>
+    // Query untuk kategori-kategori spesifik
+    $count_kategori_all = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_kategori) as total FROM kategori"))['total'] ?? 0;
+
+    // Mengambil semua hitungan kategori dalam satu query agar lebih cepat
+    $cat_query = mysqli_query($conn, "SELECT id_kategori, COUNT(*) as jumlah FROM barang GROUP BY id_kategori");
+    $cat_counts = [];
+    while($row = mysqli_fetch_assoc($cat_query)) {
+        $cat_counts[$row['id_kategori']] = $row['jumlah'];
+    }
+
+    // Data Peminjaman & History
+    $count_peminjaman_aktif = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM peminjaman WHERE status_pinjam='proses'"))['total'] ?? 0;
+    $count_history_peminjaman = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM peminjaman"))['total'] ?? 0;
+    $count_license = mysqli_num_rows(mysqli_query($conn, "SELECT id_license FROM software_license"));
+
+    // Masukkan ke dalam Array Cards
+    $cards = [
+        ['judul' => 'Total Barang', 'jumlah' => $count_barang, 'icon' => 'fa-box', 'bg' => 'bg-blue-600', 'link' => 'detail_inventaris.php'],
+        ['judul' => 'Total Software', 'jumlah' => $count_license, 'icon' => 'fa-code', 'bg' => 'bg-purple-600', 'link' => 'license.php'],
+        ['judul' => 'Kategori Utama', 'jumlah' => $count_kategori_all, 'icon' => 'fa-tags', 'bg' => 'bg-gray-700', 'link' => 'kategori.php'],
+        ['judul' => 'Alat Komputer', 'jumlah' => $cat_counts[1] ?? 0, 'icon' => 'fa-laptop', 'bg' => 'bg-teal-500', 'link' => 'kategori.php?id=1'],
+        ['judul' => 'Furniture', 'jumlah' => $cat_counts[2] ?? 0, 'icon' => 'fa-chair', 'bg' => 'bg-orange-500', 'link' => 'kategori.php?id=2'],
+        ['judul' => 'Alat Audio', 'jumlah' => $cat_counts[3] ?? 0, 'icon' => 'fa-volume-up', 'bg' => 'bg-pink-500', 'link' => 'kategori.php?id=3'],
+        ['judul' => 'Elektronik', 'jumlah' => $cat_counts[4] ?? 0, 'icon' => 'fa-plug', 'bg' => 'bg-cyan-600', 'link' => 'kategori.php?id=4'],
+        ['judul' => 'Pendingin', 'jumlah' => $cat_counts[5] ?? 0, 'icon' => 'fa-snowflake', 'bg' => 'bg-sky-400', 'link' => 'kategori.php?id=5'],
+        ['judul' => 'Peminjaman Aktif', 'jumlah' => $count_peminjaman_aktif, 'icon' => 'fa-exchange-alt', 'bg' => 'bg-emerald-500', 'link' => 'peminjaman.php'],
+        ['judul' => 'History Pinjam', 'jumlah' => $count_history_peminjaman, 'icon' => 'fa-history', 'bg' => 'bg-slate-600', 'link' => 'history.php'],
+    ];
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
