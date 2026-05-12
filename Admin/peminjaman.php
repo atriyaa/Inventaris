@@ -1,260 +1,497 @@
 <?php
-    require_once __DIR__ . "/../config/database.php";
-    session_start();
+require_once __DIR__ . "/../config/database.php";
+session_start();
 
-    $limit = 15;
-    $halaman_aktif = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
-    if ($halaman_aktif <= 0) $halaman_aktif = 1;
-    $offset = ($halaman_aktif - 1) * $limit;
+/*
+|--------------------------------------------------------------------------
+| PAGINATION
+|--------------------------------------------------------------------------
+*/
 
-    // 1. Definisikan variabel awal agar tidak "Undefined"
-    $where_sql = ''; 
-    $where = [];
+$limit = 10;
 
-    // 2. Logika filter (ambil dari kode sebelumnya)
-    $lab = $_GET['lab'] ?? null;
-    $filter = $_GET['filter'] ?? 'all';
+$halaman_aktif = isset($_GET['halaman'])
+    ? (int)$_GET['halaman']
+    : 1;
 
-    if ($filter != 'all') {
-    $where[] = "barang.kategori_id = '$filter'";
+if ($halaman_aktif <= 0) {
+    $halaman_aktif = 1;
+}
+
+$offset = ($halaman_aktif - 1) * $limit;
+
+/*
+|--------------------------------------------------------------------------
+| FILTER STATUS
+|--------------------------------------------------------------------------
+*/
+
+$status = $_GET['status'] ?? 'all';
+
+$where = [];
+
+if ($status != 'all') {
+
+    if ($status == 'proses') {
+        $where[] = "peminjaman.status_pinjam = 'Proses'";
     }
 
-    if ($lab == 'lab_mm') {
-    $where[] = "barang.lokasi = 'LAB MM'";
-    } elseif ($lab == 'lab_jarkom') {
-    $where[] = "barang.lokasi = 'LAB Jarkom'";
+    if ($status == 'selesai') {
+        $where[] = "peminjaman.status_pinjam = 'Selesai'";
     }
+}
 
-    // 3. Gabungkan array menjadi string WHERE
-    if (!empty($where)) {
-    $where_sql = 'WHERE ' . implode(' AND ', $where);
-    }
+$where_sql = '';
 
-    // Hitung total data untuk tahu jumlah halaman
-    $query_total = "SELECT COUNT(*) AS total 
-                    FROM peminjaman 
-                    INNER JOIN barang ON peminjaman.barang_id = barang.id 
-                    $where_sql";
-    $result_total = mysqli_query($conn, $query_total);
-    $row_total = mysqli_fetch_assoc($result_total);
-    $total_data = $row_total['total'];
-    $total_halaman = ceil($total_data / $limit);
-$where_sql = "WHERE peminjaman.status = 'dipinjam'";
-$query = mysqli_query($conn,"
-    SELECT *
+if (!empty($where)) {
+    $where_sql = "WHERE " . implode(' AND ', $where);
+}
+
+/*
+|--------------------------------------------------------------------------
+| TOTAL DATA
+|--------------------------------------------------------------------------
+*/
+
+$query_total = "
+    SELECT COUNT(*) AS total
     FROM peminjaman
-    INNER JOIN barang ON peminjaman.id = barang.id
-    ORDER BY peminjaman.id DESC
+    $where_sql
+";
+
+$result_total = mysqli_query($conn, $query_total);
+
+$row_total = mysqli_fetch_assoc($result_total);
+
+$total_data = $row_total['total'];
+
+$total_halaman = ceil($total_data / $limit);
+
+/*
+|--------------------------------------------------------------------------
+| QUERY DATA PEMINJAMAN
+|--------------------------------------------------------------------------
+*/
+
+$query = mysqli_query($conn, "
+    SELECT 
+        peminjaman.id_peminjaman,
+        peminjaman.nama_peminjam,
+        peminjaman.tanggal_pinjam,
+        peminjaman.tanggal_kembali,
+        peminjaman.status_pinjam,
+
+        COUNT(peminjaman_detail.id_pinjam_detail) 
+        AS total_barang
+
+    FROM peminjaman
+
+    LEFT JOIN peminjaman_detail
+        ON peminjaman.id_peminjaman = peminjaman_detail.id_peminjaman
+
+    $where_sql
+
+    GROUP BY peminjaman.id_peminjaman
+
+    ORDER BY peminjaman.id_peminjaman DESC
+
     LIMIT $limit OFFSET $offset
 ");
 
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Data Peminjaman</title>
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>InventarisApp Dashboard</title>
-    <style>
-        /* Transisi halus */
-        aside { transition: width 0.3s ease; }
-        
-        /* Gaya saat sidebar disembunyikan (collapsed) */
-        .collapsed {
-            width: 0 !important;
-            overflow: hidden;
-        }
-    </style>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 </head>
-<body class="bg-gray-100 font-sans">
+
+<body class="bg-gray-100 min-h-screen">
+
     <div class="flex h-screen overflow-hidden">
+
+        <!-- SIDEBAR -->
         <?php include '../include/menu.php'; ?>
+
+        <!-- CONTENT -->
         <div class="flex-1 flex flex-col overflow-y-auto">
+
+            <!-- HEADER -->
             <?php include '../include/header_hlm.php'; ?>
+
+            <!-- MAIN -->
             <main class="p-6">
-                <div class="bg-white border-t-4 border-blue-400 rounded shadow-sm overflow-hidden">
-                    <div class="px-4 py-3 border-b flex items-center justify-between bg-white w-full">
-                        <h3 class="font-semibold text-gray-700 text-lg whitespace-nowrap">Peminjaman Barang</h3>
-                        <div class="px-5 py-3 border-b flex items-center justify-end bg-white w-full flex gap-4">
-                            <div class="flex-shrink-0">
-                                <a href="pinjam.php" class="inline-flex items-center bg-[#3c8dbc] hover:bg-[#367fa9] text-white text-xs font-bold px-3 py-2 rounded shadow-sm transition-all uppercase tracking-wider">
-                                    <i class="fas fa-plus mr-2"></i> Tambah Peminjaman
-                                </a>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <a href="export_peminjaman.php" class="inline-flex items-center bg-[#3c8dbc] hover:bg-[#367fa9] text-white text-xs font-bold px-3 py-2 rounded shadow-sm transition-all uppercase tracking-wider">
-                                    <i class="fas fa-file-excel mr-2"></i> Export Excel
-                                </a>
-                            </div>
-                        </div>
+
+                <!-- PAGE HEADER -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">
+                            Data Peminjaman
+                        </h1>
+
+                        <p class="text-gray-500 mt-1">
+                            Kelola seluruh transaksi peminjaman barang laboratorium
+                        </p>
                     </div>
+
+                    <div class="flex gap-3">
+
+                        <!-- FILTER -->
+                        <form method="GET">
+
+                            <select
+                                name="status"
+                                onchange="this.form.submit()"
+                                class="border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                                <option value="all"
+                                    <?= $status == 'all' ? 'selected' : ''; ?>>
+                                    Semua Status
+                                </option>
+
+                                <option value="proses"
+                                    <?= $status == 'proses' ? 'selected' : ''; ?>>
+                                    Proses
+                                </option>
+
+                                <option value="selesai"
+                                    <?= $status == 'selesai' ? 'selected' : ''; ?>>
+                                    Selesai
+                                </option>
+
+                            </select>
+
+                        </form>
+
+                        <!-- BUTTON -->
+                        <a href="tambah_peminjaman.php"
+                            class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl text-sm font-medium shadow transition">
+
+                            <i class="fa-solid fa-plus"></i>
+
+                            Tambah Peminjaman
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- CARD -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+
+                    <!-- TABLE HEADER -->
+                    <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+
+                        <div>
+
+                            <h2 class="text-lg font-semibold text-gray-800">
+                                Histori Peminjaman
+                            </h2>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                Total <?= $total_data; ?> transaksi ditemukan
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- TABLE -->
                     <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left border-collapse">
-                            <thead>
-                                <tr class="bg-gray-50 border-b text-gray-700">
-                                    <th class="p-3 font-bold uppercase text-xs">No</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Nama Peminjam</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Nama Barang</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Jumlah</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Keperluan</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tanggal Pinjam</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Status</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Aksi</th>
+
+                        <table class="w-full text-sm">
+
+                            <thead class="bg-gray-50 border-b border-gray-200 text-gray-600">
+
+                                <tr>
+
+                                    <th class="px-6 py-4 text-left font-semibold">
+                                        No
+                                    </th>
+
+                                    <th class="px-6 py-4 text-left font-semibold">
+                                        Nama Peminjam
+                                    </th>
+
+                                    <th class="px-6 py-4 text-left font-semibold">
+                                        Tanggal Pinjam
+                                    </th>
+
+                                    <th class="px-6 py-4 text-left font-semibold">
+                                        Tanggal Kembali
+                                    </th>
+
+                                    <th class="px-6 py-4 text-center font-semibold">
+                                        Total Barang
+                                    </th>
+
+                                    <th class="px-6 py-4 text-center font-semibold">
+                                        Status
+                                    </th>
+
+                                    <th class="px-6 py-4 text-center font-semibold">
+                                        Aksi
+                                    </th>
+
                                 </tr>
+
                             </thead>
+
                             <tbody class="divide-y divide-gray-200">
-                                <?php
-                                $no = $offset + 1;
-                                while ($row = mysqli_fetch_assoc($query)) {
-                                ?>
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="p-3 text-center"><?= $no++; ?></td>
-                                    <td class="p-3 font-medium"><?= $row['nama_peminjam']; ?></td>
-                                    <td class="p-3 font-mono text-blue-600"><?= $row['nama_barang']; ?></td>
-                                    <td class="p-3 text-center">
-                                        <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
-                                            <?= $row['jml_brng_pinjam']; ?>
-                                        </span>
-                                    </td>
-                                    <td class="p-3"><?= $row['keperluan']; ?></td>
-                                    <td class="p-3"><?= date("d M Y, H:i",strtotime($row['tanggal_pinjam'])); ?></td>
-                                    <td class="px-6 py-4">
-                                        <?php if ($row['status'] == 'dikembalikan'): ?>
-                                            <span class="px-3 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full border border-green-200">
-                                                <i class="fas fa-clock mr-1"></i> Dikembalikan
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="px-3 py-1 text-xs font-medium bg-red-100 text-red-700 rounded-full border border-red-200">
-                                                <i class="fas fa-check-circle mr-1"></i> Dipinjam
-                                            </span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="flex flex-row items-center gap-2 p-3">
-                                        <div><?php if ($row['status'] == 'dipinjam'): ?>
-                                            <a href="kembalikan.php?id=<?= $row['id']; ?>" 
-                                            class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                                            onclick="return confirm('Yakin ingin mengembalikan barang ini?')">
-                                                Kembalikan
-                                            </a>
-                                            <?php else: ?>
-                                            <span class="text-gray-400 italic">Sudah dikembalikan</span>
-                                                    <div class="text-xs text-gray-500 mt-1 font-mono">
-                                                        <?= date("d M Y, H:i", strtotime($row['tanggal_kembali'])); ?>
-                                                    </div>
-                                        <?php endif; ?>
-                                        </div>
-                                        <div>
-                                            <button onclick="openModal(<?= $row['id']; ?>)" 
-                                                class="text-blue-500 hover:text-blue-600"
-                                                title="Cetak">
-                                                <i class="fa fa-print"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <?php } ?>
+
+                                <?php if (mysqli_num_rows($query) > 0): ?>
+
+                                    <?php $no = $offset + 1; ?>
+
+                                    <?php while ($row = mysqli_fetch_assoc($query)): ?>
+
+                                        <tr class="hover:bg-gray-50 transition">
+
+                                            <!-- NO -->
+                                            <td class="px-6 py-4 text-gray-700">
+                                                <?= $no++; ?>
+                                            </td>
+
+                                            <!-- NAMA -->
+                                            <td class="px-6 py-4">
+
+                                                <div class="font-semibold text-gray-800">
+                                                    <?= htmlspecialchars($row['nama_peminjam']); ?>
+                                                </div>
+
+                                            </td>
+
+                                            <!-- TANGGAL PINJAM -->
+                                            <td class="px-6 py-4 text-gray-600">
+
+                                                <?= date('d M Y', strtotime($row['tanggal_pinjam'])); ?>
+
+                                            </td>
+
+                                            <!-- TANGGAL KEMBALI -->
+                                            <td class="px-6 py-4 text-gray-600">
+
+                                                <?= date('d M Y', strtotime($row['tanggal_kembali'])); ?>
+
+                                            </td>
+
+                                            <!-- TOTAL BARANG -->
+                                            <td class="px-6 py-4 text-center">
+
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+
+                                                    <?= $row['total_barang']; ?> Barang
+
+                                                </span>
+
+                                            </td>
+
+                                            <!-- STATUS -->
+                                            <td class="px-6 py-4 text-center">
+
+                                                <?php if ($row['status_pinjam'] == 'Proses'): ?>
+
+                                                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+
+                                                        <i class="fa-solid fa-clock"></i>
+
+                                                        Proses
+
+                                                    </span>
+
+                                                <?php else: ?>
+
+                                                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+
+                                                        <i class="fa-solid fa-check"></i>
+
+                                                        Selesai
+
+                                                    </span>
+
+                                                <?php endif; ?>
+
+                                            </td>
+
+                                            <!-- AKSI -->
+                                            <td class="px-6 py-4">
+
+                                                <div class="flex items-center justify-center gap-2">
+
+                                                    <!-- DETAIL -->
+                                                    <a href="detail_peminjaman.php?id=<?= $row['id_peminjaman']; ?>"
+                                                        class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 flex items-center justify-center transition"
+                                                        title="Detail">
+
+                                                        <i class="fa-solid fa-eye"></i>
+
+                                                    </a>
+
+                                                    <!-- KEMBALIKAN -->
+                                                    <?php if ($row['status_pinjam'] == 'Proses'): ?>
+
+                                                        <a href="kembalikan.php?id=<?= $row['id_peminjaman']; ?>"
+                                                            onclick="return confirm('Yakin ingin menyelesaikan peminjaman ini?')"
+                                                            class="w-10 h-10 rounded-lg bg-green-100 text-green-600 hover:bg-green-200 flex items-center justify-center transition"
+                                                            title="Kembalikan">
+
+                                                            <i class="fa-solid fa-rotate-left"></i>
+
+                                                        </a>
+
+                                                    <?php endif; ?>
+
+                                                </div>
+
+                                            </td>
+
+                                        </tr>
+
+                                    <?php endwhile; ?>
+
+                                <?php else: ?>
+
+                                    <tr>
+
+                                        <td colspan="7" class="px-6 py-12 text-center">
+
+                                            <div class="flex flex-col items-center">
+
+                                                <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+
+                                                    <i class="fa-solid fa-box-open text-2xl text-gray-400"></i>
+
+                                                </div>
+
+                                                <h3 class="text-lg font-semibold text-gray-700 mb-1">
+                                                    Data tidak ditemukan
+                                                </h3>
+
+                                                <p class="text-sm text-gray-500">
+                                                    Belum ada transaksi peminjaman
+                                                </p>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                <?php endif; ?>
+
                             </tbody>
+
                         </table>
-                        <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-                            <p class="text-sm text-gray-700">Showing <span class="font-semibold"><?= ($offset + 1); ?></span> to <span class="font-semibold"><?= min($offset + $limit, $total_data); ?></span> of <span class="font-semibold"> <?= $total_data; ?></span> entries </p>
-                            <ul class="flex items-center -space-x-px shadow-sm rounded-md text-sm font-medium">
-                                <?php if($halaman_aktif > 1): ?>
-                                    <li class="inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 transition"><a href="?halaman=<?= $halaman_aktif - 1; ?>&lab=<?= $lab; ?>&filter=<?= $filter; ?>">Previous</a></li>
-                                <?php else: ?>
-                                    <li class="inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed">Previous</li>
-                                <?php endif; ?>
 
-                                <li class="z-10 bg-blue-600 border-blue-600 text-white inline-flex items-center px-4 py-2 border font-bold"><?= $halaman_aktif; ?></li>
-
-                                <?php if($halaman_aktif < $total_halaman): ?>
-                                    <li class="inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 transition"><a href="?halaman=<?= $halaman_aktif + 1; ?>&lab=<?= $lab; ?>&filter=<?= $filter; ?>">Next</a></li>
-                                <?php else: ?>
-                                    <li class="inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed">Next</li>
-                                <?php endif; ?>
-                            </ul>
-                        </div>
                     </div>
+
+                    <!-- PAGINATION -->
+                    <div class="px-6 py-4 border-t border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+                        <!-- INFO -->
+                        <div class="text-sm text-gray-600">
+
+                            Menampilkan
+
+                            <span class="font-semibold">
+                                <?= ($offset + 1); ?>
+                            </span>
+
+                            sampai
+
+                            <span class="font-semibold">
+                                <?= min($offset + $limit, $total_data); ?>
+                            </span>
+
+                            dari
+
+                            <span class="font-semibold">
+                                <?= $total_data; ?>
+                            </span>
+
+                            data
+
+                        </div>
+
+                        <!-- BUTTON -->
+                        <div class="flex items-center gap-2">
+
+                            <!-- PREV -->
+                            <?php if ($halaman_aktif > 1): ?>
+
+                                <a href="?halaman=<?= $halaman_aktif - 1; ?>&status=<?= $status; ?>"
+                                    class="px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 text-sm">
+
+                                    Previous
+
+                                </a>
+
+                            <?php else: ?>
+
+                                <button
+                                    class="px-4 py-2 rounded-lg border border-gray-200 bg-gray-100 text-gray-400 text-sm cursor-not-allowed">
+
+                                    Previous
+
+                                </button>
+
+                            <?php endif; ?>
+
+                            <!-- PAGE -->
+                            <div class="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold">
+
+                                <?= $halaman_aktif; ?>
+
+                            </div>
+
+                            <!-- NEXT -->
+                            <?php if ($halaman_aktif < $total_halaman): ?>
+
+                                <a href="?halaman=<?= $halaman_aktif + 1; ?>&status=<?= $status; ?>"
+                                    class="px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 text-sm">
+
+                                    Next
+
+                                </a>
+
+                            <?php else: ?>
+
+                                <button
+                                    class="px-4 py-2 rounded-lg border border-gray-200 bg-gray-100 text-gray-400 text-sm cursor-not-allowed">
+
+                                    Next
+
+                                </button>
+
+                            <?php endif; ?>
+
+                        </div>
+
+                    </div>
+
                 </div>
+
             </main>
+
         </div>
-    </div>
-<div id="modalNomor" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-lg shadow-lg w-96 p-6">
-
-        <h2 class="text-lg font-semibold mb-4">Input Nomor Surat</h2>
-
-        <form method="POST" action="proses_nomor.php">
-            
-            <input type="hidden" name="id" id="modal_id">
-
-            <div class="mb-4">
-                <label class="block text-sm mb-1">Nomor</label>
-
-                <div class="flex">
-                    <input type="text" name="no_surat" required
-                        class="border px-3 py-2 rounded-l w-20"
-                        placeholder="001">
-
-                    <span class="bg-gray-100 px-3 py-2 border border-l-0 rounded-r text-sm">
-                        /LAB-IF/<?= bulanRomawi(date('n')); ?>/<?= date('Y'); ?>
-                    </span>
-                </div>
-            </div>
-
-            <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeModal()" 
-                    class="px-3 py-1 bg-gray-300 rounded">
-                    Batal
-                </button>
-
-                <button type="submit" 
-                    class="px-3 py-1 bg-blue-500 text-white rounded">
-                    Simpan & Cetak
-                </button>
-            </div>
-        </form>
 
     </div>
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const toggleBtn = document.getElementById('toggle-btn');
-        const sidebar = document.querySelector('aside');
 
-        if (toggleBtn && sidebar) {
-            toggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-            });
-        }
-
-        // Script Alert
-        const alertBox = document.querySelector('.alert-container');
-        if (alertBox) {
-            setTimeout(() => {
-                alertBox.style.opacity = '0'; // Biar halus
-                setTimeout(() => alertBox.style.display = 'none', 500);
-            }, 3000);
-        }
-    });
-    const btnKembali = document.getElementById('kembalikan');
-    btnKembali.addEventListener('click', function(event) {
-        
-    });
-
-    function openModal(id) {
-        document.getElementById('modalNomor').classList.remove('hidden');
-        document.getElementById('modalNomor').classList.add('flex');
-
-        document.getElementById('modal_id').value = id;
-    }
-
-    function closeModal() {
-        document.getElementById('modalNomor').classList.add('hidden');
-        document.getElementById('modalNomor').classList.remove('flex');
-    }
-
-</script>
 </body>
+
 </html>
