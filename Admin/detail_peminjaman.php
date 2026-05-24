@@ -128,7 +128,16 @@ $total_barang = mysqli_num_rows($query_detail);
     <!-- Font Awesome -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <style>
+        /* Transisi halus */
+        aside { transition: width 0.3s ease; }
+        
+        /* Gaya saat sidebar disembunyikan (collapsed) */
+        .collapsed {
+            width: 0 !important;
+            overflow: hidden;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 min-h-screen">
@@ -541,6 +550,26 @@ $total_barang = mysqli_num_rows($query_detail);
     </div>
 
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('toggle-btn');
+        const sidebar = document.querySelector('aside');
 
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+            });
+        }
+
+        // Script Alert
+        const alertBox = document.querySelector('.alert-container');
+        if (alertBox) {
+            setTimeout(() => {
+                alertBox.style.opacity = '0'; // Biar halus
+                setTimeout(() => alertBox.style.display = 'none', 500);
+            }, 3000);
+        }
+    });
+</script>
 </body>
 </html>
