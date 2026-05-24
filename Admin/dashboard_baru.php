@@ -21,24 +21,9 @@
         $where_sql = 'WHERE ' . implode(' AND  ', $where);
     }
 
-    // $limit = 15;
-    // $halaman_aktif = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
-    // if ($halaman_aktif <= 0) $halaman_aktif = 1;
-    // $offset = ($halaman_aktif - 1) * $limit;
-
-    // // Hitung total data untuk tahu jumlah halaman
-    // $query_total = "SELECT COUNT(*) AS total FROM barang_detail INNER JOIN  ON barang.kategori_id = kategori.id $where_sql";
-    // $result_total = mysqli_query($conn, $query_total);
-    // $row_total = mysqli_fetch_assoc($result_total);
-    // $total_data = $row_total['total'];
-    // $total_halaman = ceil($total_data / $limit);
-
-    // Perbaikan query count
-    // Perbaikan query count dengan pengecekan hasil
-    // Query untuk menghitung total barang (yang ada di tabel detail)
-    $count_barang = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM barang_detail"))['total'] ?? 0;
-
+    
     // Query untuk kategori-kategori spesifik
+    $count_barang = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM barang"))['total'] ?? 0;
     $count_kategori_all = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id_kategori) as total FROM kategori"))['total'] ?? 0;
 
     // Mengambil semua hitungan kategori dalam satu query agar lebih cepat
@@ -55,7 +40,7 @@
 
     // Masukkan ke dalam Array Cards
     $cards = [
-        ['judul' => 'Total Barang', 'jumlah' => $count_barang, 'icon' => 'fa-box', 'bg' => 'bg-blue-600', 'link' => 'detail_inventaris.php'],
+        ['judul' => 'Total Barang', 'jumlah' => $count_barang, 'icon' => 'fa-box', 'bg' => 'bg-blue-600', 'link' => 'inventaris.php'],
         ['judul' => 'Total Software', 'jumlah' => $count_license, 'icon' => 'fa-code', 'bg' => 'bg-purple-600', 'link' => 'license.php'],
         ['judul' => 'Kategori Utama', 'jumlah' => $count_kategori_all, 'icon' => 'fa-tags', 'bg' => 'bg-gray-700', 'link' => 'kategori.php'],
         ['judul' => 'Alat Komputer', 'jumlah' => $cat_counts[1] ?? 0, 'icon' => 'fa-laptop', 'bg' => 'bg-teal-500', 'link' => 'kategori.php?id=1'],
