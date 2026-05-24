@@ -1,7 +1,37 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
     session_start();
-
+    if (isset($_GET['aksi']) && $_GET['aksi'] == 'selesai_rusak' && isset($_GET['id_kerusakan']) && isset($_GET['id_detail'])) {
+        $id_kerusakan = mysqli_real_escape_string($conn, $_GET['id_kerusakan']);
+        $id_detail    = mysqli_real_escape_string($conn, $_GET['id_detail']);
+        
+        // Mulai transaksi database
+        mysqli_begin_transaction($conn);
+        
+        try {
+            // 1. Update status_perbaikan di tabel kerusakan menjadi 'Selesai'
+            $query_update_kerusakan = "UPDATE kerusakan SET status_perbaikan = 'Selesai' WHERE id_kerusakan = '$id_kerusakan'";
+            mysqli_query($conn, $query_update_kerusakan);
+            
+            // 2. Kembalikan kondisi menjadi 'Baik' dan status menjadi 'Tersedia' di tabel barang_detail
+            $query_update_detail = "UPDATE barang_detail SET kondisi = 'Baik', status = 'Tersedia' WHERE id_detail = '$id_detail'";
+            mysqli_query($conn, $query_update_detail);
+            
+            // Simpan perubahan secara permanen
+            mysqli_commit($conn);
+            
+            // Ambil parameter filter dan halaman yang ada saat ini agar posisi halaman tidak lompat/berubah setelah refresh
+            $lab_param = isset($_GET['lab']) ? '&lab=' . $_GET['lab'] : '';
+            $filter_param = isset($_GET['filter']) ? '&filter=' . $_GET['filter'] : '';
+            $hal_param = isset($_GET['halaman']) ? '&halaman=' . $_GET['halaman'] : '';
+            
+            header("Location: kerusakan.php?" . $lab_param . $filter_param . $hal_param);
+            exit;
+        } catch (Exception $e) {
+            mysqli_rollback($conn);
+            die("Gagal memperbarui status! Error: " . mysqli_error($conn));
+        }
+    }
     $limit = 15;
     $halaman_aktif = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
     if ($halaman_aktif <= 0) $halaman_aktif = 1;
@@ -41,8 +71,11 @@
     $total_halaman = ceil($total_data / $limit);
 
 $query = mysqli_query($conn,"
-    select * from barang_detail inner join kerusakan on barang_detail.id_detail = kerusakan.id_detail order by tanggal_lapor desc
-    LIMIT $limit OFFSET $offset
+    SELECT * FROM kerusakan
+    INNER JOIN barang_detail ON barang_detail.id_detail = kerusakan.id_detail
+    INNER JOIN barang ON barang.id_barang = barang_detail.id_barang
+    ORDER BY tanggal_lapor desc
+    LIMIT $limit OFFSET $offset;
 ");
 ?>
 <!DOCTYPE html>
@@ -91,13 +124,12 @@ $query = mysqli_query($conn,"
                             <thead>
                                 <tr class="bg-gray-50 border-b text-gray-700">
                                     <th class="p-3 font-bold uppercase text-xs">No</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Kode Inventaris</th>
                                     <th class="p-3 font-bold uppercase text-xs">Nama Barang</th>
+                                    <th class="p-3 font-bold uppercase text-xs">Kode Unit</th>
                                     <th class="p-3 font-bold uppercase text-xs">Tanggal Lapor</th>
                                     <th class="p-3 font-bold uppercase text-xs">Deskripsi Kerusakan</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tingkat Kerusakan</th>
                                     <th class="p-3 font-bold uppercase text-xs">Status Perbaikan</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Biaya Perbaikan</th>
+                                    <th class="p-3 font-bold uppercase text-xs">Aksi</th>
 
                                 </tr>
                             </thead>
@@ -108,13 +140,25 @@ $query = mysqli_query($conn,"
                                 ?>
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="p-3 text-center"><?= $no++; ?></td>
-                                    <td class="p-3 font-mono text-blue-600"><?= $row['kode_inventaris']; ?></td>
                                     <td class="p-3 font-mono text-blue-600"><?= $row['nama_barang']; ?></td>
+                                    <td class="p-3 font-mono text-blue-600"><?= $row['kode_unit']; ?></td>
                                     <td class="p-3 font-medium"><?= date("d M Y",strtotime($row['tanggal_lapor'])); ?></td>
                                     <td class="p-3 text-xs text-gray-600"><?= $row['deskripsi_kerusakan']; ?></td>
-                                    <td class="p-3 font-mono text-blue-600"><?= $row['tingkat_kerusakan']; ?></td>
                                     <td class="p-3 font-mono text-blue-600"><?= $row['status_perbaikan']; ?></td>
-                                    <td class="p-3 font-medium"><?= number_format($row['biaya_perbaikan'], 2, ",","."); ?></td>
+                                    <td class="px-6 py-4 text-center">
+                                        <?php if ($row['status_perbaikan'] != 'Selesai' && $row['status_perbaikan'] != 'Afkir'): ?>
+                                            <a href="kerusakan.php?aksi=selesai_rusak&id_kerusakan=<?= $row['id_kerusakan']; ?>&id_detail=<?= $row['id_detail']; ?><?= isset($_GET['lab']) ? '&lab='.$_GET['lab'] : ''; ?><?= isset($_GET['filter']) ? '&filter='.$_GET['filter'] : ''; ?><?= isset($_GET['halaman']) ? '&halaman='.$_GET['halaman'] : ''; ?>" 
+                                            onclick="return confirm('Pertanyaan 1: Apakah perbaikan untuk unit <?= $row['kode_unit']; ?> ini sudah benar-benar selesai?') && confirm('Pertanyaan 2: Anda yakin? Tindakan ini akan langsung mengubah status perbaikan menjadi Selesai dan mengembalikan kondisi unit menjadi Baik di sistem.');"
+                                            class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded text-xs font-semibold shadow-sm transition cursor-pointer">
+                                                <i class="fas fa-check mr-1"></i> Selesai
+                                            </a>
+                                        <?php else: ?>
+                                            <button type="button" disabled 
+                                                    class="inline-flex items-center px-3 py-1.5 bg-gray-200 text-gray-400 border border-gray-300 rounded text-xs font-semibold cursor-not-allowed shadow-none">
+                                                <i class="fas fa-check-double text-gray-400 mr-1"></i> Selesai
+                                            </button>
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                                 <?php } ?>
                             </tbody>

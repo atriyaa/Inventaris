@@ -1,7 +1,24 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
     session_start();
-
+    if (isset($_GET['aksi']) && $_GET['aksi'] == 'selesai' && isset($_GET['id_detail'])) {
+        $id_detail = mysqli_real_escape_string($conn, $_GET['id_detail']);
+        
+        mysqli_begin_transaction($conn);
+        try {
+            $query_selesai = "UPDATE barang_detail SET kondisi = 'Baik', status = 'Tersedia' WHERE id_detail = '$id_detail'";
+            mysqli_query($conn, $query_selesai);
+            
+            mysqli_commit($conn);
+            
+            // LANGSUNG REDIRECT TANPA ALERT MENGGANGGU
+            header("Location: perawatan.php");
+            exit;
+        } catch (Exception $e) {
+            mysqli_rollback($conn);
+            echo "<script>alert('Gagal memperbarui status!');</script>";
+        }
+    }
     $limit = 10;
     $halaman_aktif = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
     if ($halaman_aktif <= 0) $halaman_aktif = 1;
@@ -42,7 +59,9 @@
 
 $query = mysqli_query($conn,"
     SELECT * FROM perawatan
-    inner join barang_detail on perawatan.id_detail = barang_detail.id_detail ORDER BY tgl_perawatan DESC
+    INNER JOIN barang_detail on perawatan.id_detail = barang_detail.id_detail 
+    INNER JOIN barang ON barang.id_barang = barang_detail.id_barang
+    ORDER BY tgl_perawatan DESC
     LIMIT $limit OFFSET $offset
 ");
 ?>
@@ -92,24 +111,40 @@ $query = mysqli_query($conn,"
                             <thead>
                                 <tr class="bg-gray-50 border-b text-gray-700">
                                     <th class="p-3 font-bold uppercase text-xs">No</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Kode Inventaris</th>
                                     <th class="p-3 font-bold uppercase text-xs">Nama Barang</th>
-                                    <th class="p-3 font-bold uppercase text-xs">Tanggal perbaikan</th>
+                                    <th class="p-3 font-bold uppercase text-xs">Kode Unit</th>
+                                    <th class="p-3 font-bold uppercase text-xs">Tanggal Perawatan</th>
                                     <th class="p-3 font-bold uppercase text-xs">Deskripsi</th>
+                                    <th class="p-3 font-bold uppercase text-xs">Admin</th>
+                                    <th class="p-3 font-bold uppercase text-xs">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
-                                <?php
-                                $no = $offset + 1;
-                                while ($row = mysqli_fetch_assoc($query)) {
-                                ?>
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="p-3 text-center"><?= $no++; ?></td>
-                                    <td class="p-3 font-mono text-blue-600"><?= $row['kode_inventaris']; ?></td>
-                                    <td class="p-3 font-mono text-blue-600"><?= $row['nama_barang']; ?></td>
-                                    <td class="p-3 text-xs text-gray-600"><?= date("d M Y", strtotime($row['deskripsi'])); ?></td>
-                                </tr>
-                                <?php } ?>
+                                <?php $no = $offset + 1; ?> 
+                                <?php while ($row = mysqli_fetch_assoc($query)): ?>
+                                        <tr class="hover:bg-gray-50/50 transition-colors">
+                                            <td class="px-6 py-4 font-medium text-gray-900"><?= $no++?></td>
+                                            <td class="px-6 py-4 font-medium text-gray-900"><?= $row['nama_barang']; ?></td>
+                                            <td class="px-6 py-4 font-medium text-gray-900"><?= $row['kode_unit']; ?></td>
+                                            <td class="px-6 py-4"><?= date('d-m-Y', strtotime($row['tgl_perawatan'])); ?></td>
+                                            <td class="px-6 py-4 font-medium text-gray-900"><?= $row['keterangan_perawatan']; ?></td>
+                                            <td class="px-6 py-4"><?= $row['petugas']; ?></td>
+                                            <td>
+                                                <?php if ($row['kondisi'] == 'Perbaikan'): ?>
+                                                    <a href="perawatan.php?aksi=selesai&id_detail=<?= $row['id_detail']; ?>" 
+                                                    onclick="return confirm('Pertanyaan 1: Apakah pemeliharaan unit <?= $row['kode_unit']; ?> sudah benar-benar selesai?') && confirm('Pertanyaan 2: Anda yakin? Tindakan ini akan langsung mengubah status kondisi unit menjadi Baik dan Tersedia kembali di sistem.');"
+                                                    class="inline-flex items-center px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-xs font-medium shadow-sm transition cursor-pointer">
+                                                        <i class="fas fa-check mr-1"></i> Selesai
+                                                    </a>
+                                                <?php else: ?>
+                                                    <button type="button" disabled 
+                                                            class="inline-flex items-center px-3 py-1 bg-gray-200 text-gray-400 rounded text-xs font-medium cursor-not-allowed border border-gray-300 shadow-none">
+                                                        <i class="fas fa-check-double text-gray-400 mr-1"></i> Selesai
+                                                    </button>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                <?php endwhile; ?>
                             </tbody>
                         </table>
                         <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">

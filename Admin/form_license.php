@@ -1,26 +1,42 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
     session_start();
+    $sql_nama_barang = mysqli_query($conn, "SELECT id_barang, nama_barang FROM barang GROUP BY id_barang");
+
+    $sql_semua_detail = mysqli_query($conn, "SELECT id_detail, id_barang, kode_unit FROM barang_detail");
+
+    $array_detail = [];
+    while ($row = mysqli_fetch_assoc($sql_semua_detail)) {
+        // Menyusun array bertingkat berdasarkan id_barang
+        $array_detail[$row['id_barang']][] = [
+            'id'   => $row['id_detail'],
+            'kode' => $row['kode_unit']
+        ];
+    }
+    if (!$sql_nama_barang) {
+        die("Query kategori error: " . mysqli_error($conn));
+    }
     $create_message = "";
     $message_type = "";
 
-    if (isset($_POST["tambah_data"])) {
-    $nama_software = $_POST["nama_software"];
-    $license_key = $_POST["license_key"];
-    $tipe_license = $_POST["tipe_license"];
-    $tanggal_pembelian = $_POST["tanggal_pembelian"];
-    $tanggal_expired = $_POST["tanggal_expired"];
-    $jumlah_user = $_POST["jumlah_user"];
-    $status_aktif= $_POST["status_aktif"];
-    $keterangan = $_POST["keterangan"];
+    if (isset($_POST["tambah_license"])) {
+        $id_detail          = mysqli_real_escape_string($conn, $_POST['id_detail']);
+        $nama_software      = mysqli_real_escape_string($conn, $_POST['nama_software']);
+        $kode_lisensi       = mysqli_real_escape_string($conn, $_POST['kode_lisensi']);
+        $tanggal_aktivasi   = mysqli_real_escape_string($conn, $_POST['tanggal_aktivasi']);
+        $tgl_kadaluarsa     = mysqli_real_escape_string($conn, $_POST['tgl_kadaluarsa']);
 
-    $sql = "INSERT INTO license_software(nama_software, license_key, tipe_license, tanggal_pembelian, tanggal_expired, jumlah_user, status_aktif, keterangan) VALUES ('$nama_software', '$license_key', '$tipe_license', '$tanggal_pembelian', '$tanggal_expired', '$jumlah_user', '$status_aktif', '$keterangan')";
-    if (mysqli_query($conn, $sql)) {
-        header("Location: form_license.php?tambah_data=success");
-        exit;
+        $query_insert = "INSERT INTO software_license (id_detail, nama_software, kode_lisensi, tanggal_aktivasi, tgl_kadaluarsa) 
+        VALUES ('$id_detail', '$nama_software', '$kode_lisensi', '$tanggal_aktivasi', ' $tgl_kadaluarsa')";
+
+        echo "<script>
+        alert('Data perawatan berhasil disimpan dan status unit berhasil diubah menjadi Perbaikan!');
+        window.location.href='perawatan.php';
+        </script>";
     } else {
-        die("Error: " . mysqli_error($conn));
-    }
+        echo "<script>
+        alert('Gagal menyimpan data: " . mysqli_error($conn) . "');
+        </script>";
     }
 ?>
 <!DOCTYPE html>
@@ -74,7 +90,8 @@
 
                         <form method="POST" autocomplete="off" class="p-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    
+
+                            
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-1">Nama Software</label>
                                     <input type="text" name="nama_software" placeholder="Contoh: Microsoft Office" required
@@ -135,7 +152,7 @@
                                 <a href="license.php" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm font-semibold transition flex items-center">
                                     <i class="fas fa-arrow-left mr-2"></i> Kembali
                                 </a>
-                                <button type="submit" name="tambah_data"  class="px-4 py-2 bg-[#3c8dbc] hover:bg-[#367fa9] text-white rounded text-sm font-semibold shadow-sm transition flex items-center">
+                                <button type="submit" name="tambah_license"  class="px-4 py-2 bg-[#3c8dbc] hover:bg-[#367fa9] text-white rounded text-sm font-semibold shadow-sm transition flex items-center">
                                     <i class="fas fa-save mr-2"></i> Simpan Data Barang
                                 </button>
                             </div>
