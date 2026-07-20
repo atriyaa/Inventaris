@@ -1,35 +1,58 @@
 <?php
-// 1. Pastikan path benar. Hapus titik sebelum folder config jika menggunakan __DIR__
 require_once __DIR__ . "/../config/database.php";
 
-if (!isset($_GET['$conn'])) {
-    die("ID tidak ditemukan");
+// 1. Cek parameter ID Master Barang dari URL
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    die("ID barang tidak ditemukan.");
 }
 
-$id = (int) $_GET['id'];
+$id_barang = (int) $_GET['id'];
 
-// 2. Cek apakah barang sedang/pernah dipinjam (Relational Integrity)
-$cek = mysqli_query($conn, "SELECT * FROM peminjaman WHERE barang_id='$id'");
-$jumlah = mysqli_num_rows($cek);
+/* 
+ 2. Cek Relasi Berantai menggunakan JOIN:
+    Master Barang (id_barang) -> Detail Barang (id_detail) -> Peminjaman Detail
+*/
+$query_cek = "
+    SELECT pd.* 
+    FROM peminjaman_detail pd
+    JOIN barang_detail db ON pd.id_detail = db.id_detail
+    WHERE db.id_barang = '$id_barang'
+";
 
-if($jumlah > 0) {
-    // JIKA ADA DATA: Gunakan JavaScript untuk Redirect
-    // Jangan gunakan header() setelah echo!
+$cek = mysqli_query($conn, $query_cek);
+
+if (!$cek) {
+    die("Error Query Check: " . mysqli_error($conn));
+}
+
+// 3. Jika ditemukan riwayat peminjaman, batalkan hapus
+if (mysqli_num_rows($cek) > 0) {
     echo "<script>
-            alert('Barang tidak bisa dihapus karena sudah pernah dipinjam'); 
-            window.location='dashboard.php';
+            alert('Barang ini tidak bisa dihapus karena unit fisiknya sedang atau pernah memiliki riwayat peminjaman!'); 
+            window.location='inventaris.php';
           </script>";
-    exit(); // Penting: Hentikan script di sini
+    exit();
 } else {
-    // JIKA TIDAK ADA DATA: Lakukan penghapusan
-    $query = "DELETE FROM barang WHERE id = $id";
+    /* 
+     4. Jika TIDAK ADA riwayat peminjaman:
+        a. Hapus dulu semua detail/unit fisik barangnya dari `detail_barang` (jika ada)
+        b. Baru hapus master barangnya dari `barang`
+    */
     
-    if (mysqli_query($conn, $query)) {
-        // Redirect ke satu tujuan yang pasti
-        header("Location: dashboard_baru.php?delete=success");
+    // Hapus unit fisik di detail_barang terlebih dahulu (Foreign Key safety)
+    mysqli_query($conn, "DELETE FROM barang_detail WHERE id_barang = '$id_barang'");
+
+    // Hapus Master Barang
+    $stmt = mysqli_prepare($conn, "DELETE FROM barang WHERE id_barang = ?");
+    mysqli_stmt_bind_param($stmt, "i", $id_barang);
+
+    if (mysqli_stmt_execute($stmt)) {
+        header("Location: inventaris.php?delete=success");
         exit(); 
     } else {
-        echo "Gagal menghapus data: " . mysqli_error($conn);
+        echo "Gagal menghapus master barang: " . mysqli_error($conn);
     }
+    
+    mysqli_stmt_close($stmt);
 }
 ?>

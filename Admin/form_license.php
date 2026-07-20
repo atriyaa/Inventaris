@@ -1,44 +1,51 @@
 <?php
     require_once __DIR__ . "/../config/database.php";
     session_start();
+
+    // 1. Query Data Pilihan (Dropdown)
     $sql_nama_barang = mysqli_query($conn, "SELECT id_barang, nama_barang FROM barang GROUP BY id_barang");
+
+    if (!$sql_nama_barang) {
+        die("Query barang error: " . mysqli_error($conn));
+    }
 
     $sql_semua_detail = mysqli_query($conn, "SELECT id_detail, id_barang, kode_unit FROM barang_detail");
 
     $array_detail = [];
     while ($row = mysqli_fetch_assoc($sql_semua_detail)) {
-        // Menyusun array bertingkat berdasarkan id_barang
         $array_detail[$row['id_barang']][] = [
             'id'   => $row['id_detail'],
             'kode' => $row['kode_unit']
         ];
     }
-    if (!$sql_nama_barang) {
-        die("Query kategori error: " . mysqli_error($conn));
-    }
-    $create_message = "";
-    $message_type = "";
 
+    // 2. Proses Hanya Jalankan Saat Form Di-submit
     if (isset($_POST["tambah_license"])) {
-        $id_detail          = mysqli_real_escape_string($conn, $_POST['id_detail']);
-        $nama_software      = mysqli_real_escape_string($conn, $_POST['nama_software']);
-        $kode_lisensi       = mysqli_real_escape_string($conn, $_POST['kode_lisensi']);
-        $tanggal_aktivasi   = mysqli_real_escape_string($conn, $_POST['tanggal_aktivasi']);
-        $tgl_kadaluarsa     = mysqli_real_escape_string($conn, $_POST['tgl_kadaluarsa']);
+        $id_detail        = mysqli_real_escape_string($conn, $_POST['id_detail']);
+        $nama_software    = mysqli_real_escape_string($conn, $_POST['nama_software']);
+        $kode_lisensi     = mysqli_real_escape_string($conn, $_POST['kode_lisensi']);
+        $tanggal_aktivasi = mysqli_real_escape_string($conn, $_POST['tanggal_aktivasi']);
+        $tgl_kadaluarsa   = mysqli_real_escape_string($conn, $_POST['tgl_kadaluarsa']);
 
+        // Query Insert
         $query_insert = "INSERT INTO software_license (id_detail, nama_software, kode_lisensi, tanggal_aktivasi, tgl_kadaluarsa) 
-        VALUES ('$id_detail', '$nama_software', '$kode_lisensi', '$tanggal_aktivasi', ' $tgl_kadaluarsa')";
+                         VALUES ('$id_detail', '$nama_software', '$kode_lisensi', '$tanggal_aktivasi', '$tgl_kadaluarsa')";
 
-        echo "<script>
-        alert('Data perawatan berhasil disimpan dan status unit berhasil diubah menjadi Perbaikan!');
-        window.location.href='perawatan.php';
-        </script>";
-    } else {
-        echo "<script>
-        alert('Gagal menyimpan data: " . mysqli_error($conn) . "');
-        </script>";
+        // Eksekusi Query ke Database
+        if (mysqli_query($conn, $query_insert)) {
+            echo "<script>
+            alert('Data lisensi berhasil disimpan!');
+            window.location.href='perawatan.php';
+            </script>";
+            exit();
+        } else {
+            echo "<script>
+            alert('Gagal menyimpan data: " . mysqli_error($conn) . "');
+            </script>";
+        }
     }
-?>
+    // HAPUS BLOK 'ELSE' LAMA DI SINI
+?>r
 <!DOCTYPE html>
 <html lang="en">
 <head>

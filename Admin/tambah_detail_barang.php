@@ -54,7 +54,7 @@
                 </div>
                 <?php if (isset($_GET['tambah_data']) && $_GET['tambah_data'] == 'success'): ?>
                 <div class="bg-green-500 text-white p-3 rounded mb-4 text-center shadow-sm" id="alert">
-                    <i class="fas fa-check-circle mr-2"></i> Deatil Barang Berhasil Di Tambah!
+                    <i class="fas fa-check-circle mr-2"></i> Detail Barang Berhasil Di Tambah!
                 </div>
                 <?php endif; ?>
                 <div class="bg-white rounded shadow-md border-t-4 border[#3c8dbc]">
@@ -64,9 +64,6 @@
                             <h1 class="text-2xl font-semibold text-gray-800">Tambah Inventaris Barang</h1>
                             <p class="text-sm text-gray-500">Masukkan detail barang baru ke dalam sistem.</p>
                         </div>
-                        <button onclick="bukaModal()" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded text-sm font-semibold shadow-sm transition flex items-center">
-                            <i class="fas fa-plus-circle mr-2"></i> Kategori Baru
-                        </button>
                     </div>
 
                     <div class="bg-white rounded shadow-md border-t-4 border-[#3c8dbc]">
@@ -78,25 +75,25 @@
                         <form method="POST" autocomplete="off" class="p-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-1">Nama Barang</label>
-                                    <select id="nama"  name="tersedia" required
-                                    class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
-                                    <option value="">-- Pilih Nama Barang --</option>
-                                    <?php while ($k = mysqli_fetch_assoc($sql_barang)): ?>
-                                        <option value="<?= $k['id_barang']; ?>"><?= $k['nama_barang']; ?></option>
+                                 <div class="mb-4">
+
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1">Nama Barang:</label>
+                                    <select name="id_barang" id="pilih_barang" placeholder="Cari atau pilih barang..." autocomplete="off" required>
+                                        <option value="">-- Pilih Barang --</option>
+                                        <?php while ($k = mysqli_fetch_assoc($sql_barang)): ?>
+                                            <option value="<?= $k['id_barang']; ?>"><?= $k['nama_barang']; ?></option>
                                         <?php endwhile; ?>
                                     </select>
                                 </div>
                                 <div>
                                     <label id="kode"  class="block text-sm font-bold text-gray-700 mb-1">Kode Unit</label>
-                                    <input type="text" name="kode_unit" placeholder="Contoh: " required
+                                    <input type="text" name="kode_unit" placeholder="Contoh: KOMP-MM-001 " required
                                         class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-1">Lokasi Meja</label>
-                                    <input type="text" name="tipe" placeholder="Inspiron 15, Thinkpad..."
+                                    <input type="text" name="tipe" placeholder="Contoh: MJ-MM-01"
                                     class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
                                 </div>
                             </div>
@@ -143,50 +140,5 @@
                         </form>
                     </div>
                 </div>
-
-<div id="modalKategori" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-            <h4 class="font-bold text-gray-700">Tambah Kategori Baru</h4>
-            <button onclick="tutupModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
-        </div>
-        <form action="proses_kategori.php" method="POST" class="p-6">
-            <div class="mb-6">
-                <label class="block text-sm font-bold text-gray-700 mb-2">Nama Kategori</label>
-                <input type="text" name="nama_kategori" placeholder="Elektronik, Furniture, dll..." required 
-                       class="w-full border-gray-300 rounded shadow-sm focus:border-[#3c8dbc] focus:ring focus:ring-[#3c8dbc]/20">
-            </div>
-            <div class="flex justify-end gap-2">
-                <button type="button" onclick="tutupModal()" class="px-4 py-2 text-gray-600 hover:text-gray-800 font-semibold text-sm">Batal</button>
-                <button type="submit" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded font-semibold text-sm shadow-sm transition">
-                    Simpan Kategori
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<>
-function bukaModal() {
-    document.getElementById('modalKategori').classList.remove('hidden');
-}
-function tutupModal() {
-    document.getElementById('modalKategori').classList.add('hidden');
-}
-document.getElementById("kode").addEventListener("input", function() {
-    let value = this.value.toUpperCase();
-    let nama = document.getElementById("nama");
-
-    if (value.includes("KOMP")) {
-        nama.placeholder = "Contoh: Komputer, Laptop, CPU";
-    } else if (value.includes("AUD")) {
-        nama.placeholder = "Contoh: Speaker, Mic, Sound System";
-    } else if (value.includes("LAB")) {
-        nama.placeholder = "Contoh: Meja Lab, Kursi Lab";
-    } else {
-        nama.placeholder = "Contoh: ";
-    }
-});
-</script>
 </body>
 </html>
